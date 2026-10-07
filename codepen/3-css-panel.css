@@ -1,0 +1,8 @@
+body { background: radial-gradient(1200px 600px at 10% -10%, rgba(34,197,94,0.10), transparent 60%), #0a0d12; }
+input[type=number]::-webkit-inner-spin-button { opacity: .4; }
+.modal-enter { animation: modalIn .25s cubic-bezier(.2,.8,.2,1) both; }
+.backdrop-enter { animation: fadeIn .2s ease-out both; }
+.card-enter { animation: cardIn .3s ease-out both; }
+@keyframes modalIn { from { opacity: 0; transform: translateY(16px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes cardIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }

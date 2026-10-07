@@ -1,0 +1,13 @@
+{
+  "name": "trailsync",
+  "private": true,
+  "type": "module",
+  "description": "TrailSync: suspension, tire pressure and trail condition log for mountain bikers",
+  "scripts": {
+    "build": "node -e \"require('fs').mkdirSync('public',{recursive:true});require('fs').copyFileSync('index.html','public/index.html')\""
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.117.3",
+    "stripe": "^23.0.0"
+  }
+}
