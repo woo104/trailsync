@@ -281,7 +281,7 @@
             </div>
 
             <button type="button" id="suggestPsiBtn" class="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-pro-400/50 bg-pro-500/10 hover:bg-pro-500/20 py-2 text-sm font-semibold text-pro-200 transition">
-              ✨ Suggest PSI for these trails <span data-pro-badge class="rounded bg-pro-500 px-1 py-px text-[10px] font-bold text-[#1a1408]">PRO</span>
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16a8 8 0 1116 0"/><path d="M12 16l4-5"/></svg> Suggest PSI for these trails <span data-pro-badge class="rounded bg-pro-500 px-1 py-px text-[10px] font-bold text-[#1a1408]">PRO</span>
             </button>
             <p id="suggestNote" class="hidden -mt-2 text-xs text-pro-200"></p>
             <div class="grid grid-cols-2 gap-3">
@@ -353,7 +353,7 @@
         </div>
         <div id="historyFeed" class="space-y-4"></div>
         <div id="emptyState" class="hidden rounded-2xl border border-dashed border-white/10 p-10 text-center">
-          <div class="mx-auto h-12 w-12 rounded-full bg-ink-800 grid place-items-center text-2xl">🚵</div>
+          <div class="mx-auto h-12 w-12 rounded-full bg-ink-800 grid place-items-center text-trail-400"><svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 20l6-10 4 6 3-4 5 8z"/></svg></div>
           <p class="mt-4 font-semibold text-white">No rides logged yet</p>
           <p class="mt-1 text-sm text-slate-500">Log your first ride to start building your setup history.</p>
         </div>
@@ -531,14 +531,14 @@
 
       // Moisture / grip scale, driest to wettest
       const CONDITIONS = [
-        { id: 'moondust', label: 'Moon dust',             short: 'Moon dust', icon: '🌕', badge: 'cond-badge cb-moondust',  bar: 'from-orange-200 to-orange-400' },
-        { id: 'dusty',    label: 'Dusty / loose',         short: 'Dusty',     icon: '💨', badge: 'cond-badge cb-dusty',     bar: 'from-amber-300 to-amber-500' },
-        { id: 'hardpack', label: 'Hardpack',              short: 'Hardpack',  icon: '🧱', badge: 'cond-badge cb-hardpack',  bar: 'from-yellow-100 to-yellow-400' },
-        { id: 'hero',     label: 'Hero dirt / tacky',     short: 'Hero dirt', icon: '🤘', badge: 'cond-badge cb-hero', bar: 'from-emerald-300 to-emerald-600' },
-        { id: 'greasy',   label: 'Damp / greasy',         short: 'Greasy',    icon: '💧', badge: 'cond-badge cb-greasy',        bar: 'from-teal-300 to-teal-600' },
-        { id: 'wet',      label: 'Wet',                   short: 'Wet',       icon: '🌧️', badge: 'cond-badge cb-wet',           bar: 'from-sky-500 to-sky-700' },
-        { id: 'muddy',    label: 'Muddy / peanut butter', short: 'Muddy',     icon: '🟤', badge: 'cond-badge cb-muddy',     bar: 'from-amber-600 to-amber-900' },
-        { id: 'snow',     label: 'Snow / frozen',         short: 'Snow',      icon: '❄️', badge: 'cond-badge cb-snow',  bar: 'from-gray-200 to-gray-400' }
+        { id: 'moondust', label: 'Moon dust',             short: 'Moon dust', badge: 'cond-badge cb-moondust',  bar: 'from-orange-200 to-orange-400' },
+        { id: 'dusty',    label: 'Dusty / loose',         short: 'Dusty',     badge: 'cond-badge cb-dusty',     bar: 'from-amber-300 to-amber-500' },
+        { id: 'hardpack', label: 'Hardpack',              short: 'Hardpack',  badge: 'cond-badge cb-hardpack',  bar: 'from-yellow-100 to-yellow-400' },
+        { id: 'hero',     label: 'Hero dirt / tacky',     short: 'Hero dirt', badge: 'cond-badge cb-hero', bar: 'from-emerald-300 to-emerald-600' },
+        { id: 'greasy',   label: 'Damp / greasy',         short: 'Greasy',    badge: 'cond-badge cb-greasy',        bar: 'from-teal-300 to-teal-600' },
+        { id: 'wet',      label: 'Wet',                   short: 'Wet',       badge: 'cond-badge cb-wet',           bar: 'from-sky-500 to-sky-700' },
+        { id: 'muddy',    label: 'Muddy / peanut butter', short: 'Muddy',     badge: 'cond-badge cb-muddy',     bar: 'from-amber-600 to-amber-900' },
+        { id: 'snow',     label: 'Snow / frozen',         short: 'Snow',      badge: 'cond-badge cb-snow',  bar: 'from-gray-200 to-gray-400' }
       ];
       const COND = Object.fromEntries(CONDITIONS.map(c => [c.id, c]));
       const DEFAULT_COND = 'hero';
@@ -668,7 +668,9 @@
       const trailRows = $('#trailRows');
       let rowSeq = 0;
 
-      const condOptions = CONDITIONS.map(c => `<option value="${c.id}">${c.icon} ${c.label}</option>`).join('');
+      const condOptions = CONDITIONS.map(c => `<option value="${c.id}">${c.label}</option>`).join('');
+      // Small color dot that identifies a condition, matching its badge color in both themes.
+      const condDot = (id) => `<span class="cb-${id} inline-block h-2 w-2 shrink-0 rounded-full" style="background:var(--cb-fg)" aria-hidden="true"></span>`;
 
       function addTrailRow(prefill = {}) {
         const n = ++rowSeq;
@@ -823,7 +825,7 @@
         $('#statRear').textContent = fmt(avg('rearPsi'));
         const counts = allTrails.reduce((m, t) => (m[t.condition] = (m[t.condition] || 0) + 1, m), {});
         const top = COND[Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0]];
-        $('#statCond').textContent = top ? `${top.icon} ${top.short}` : '–';
+        $('#statCond').textContent = top ? top.short : '–';
       }
 
       function trailHTML(t) {
@@ -835,7 +837,7 @@
             <span class="font-medium text-slate-100 mr-auto min-w-0 truncate">${esc(t.name)}</span>
             <span class="flex flex-wrap items-center gap-1.5">
               ${tags}
-              <span class="rounded-full border px-2.5 py-0.5 text-xs font-medium ${c.badge}">${c.icon} ${c.short}</span>
+              <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium ${c.badge}"><span class="h-1.5 w-1.5 rounded-full bg-current" aria-hidden="true"></span>${c.short}</span>
             </span>
           </li>`;
       }
@@ -1408,15 +1410,15 @@
       function lockedHTML() {
         const item = (icon, title, text) => `
           <div class="rounded-xl bg-ink-850 border border-white/5 p-4">
-            <p class="text-lg">${icon}</p>
+            <p class="text-trail-400">${icon}</p>
             <p class="mt-1 text-sm font-semibold text-white">${title}</p>
             <p class="mt-0.5 text-xs text-slate-400">${text}</p>
           </div>`;
         return `
           <div class="grid sm:grid-cols-3 gap-3">
-            ${item('🎯', 'Setup for today\'s trails', 'Tire PSI, sag and clicker tips from your weight, tires, conditions and surface.')}
-            ${item('📈', 'Your best setup', 'Trends and the PSI that felt best for you in each condition.')}
-            ${item('🧾', 'Export', 'CSV and PDF reports to share with your mechanic.')}
+            ${item('<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16a8 8 0 1116 0"/><path d="M12 16l4-5"/></svg>', 'Setup for today\'s trails', 'Tire PSI, sag and clicker tips from your weight, tires, conditions and surface.')}
+            ${item('<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19h16"/><path d="M5 15l4-5 4 3 6-7"/></svg>', 'Your best setup', 'Trends and the PSI that felt best for you in each condition.')}
+            ${item('<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 12h5M10 16h5"/></svg>', 'Export', 'CSV and PDF reports to share with your mechanic.')}
           </div>
           <button type="button" data-unlock class="mt-4 w-full rounded-lg bg-pro-500 hover:bg-pro-400 py-3 text-sm font-bold uppercase tracking-wide text-[#1a1408] transition">Unlock with TrailSync Pro</button>`;
       }
@@ -1531,7 +1533,7 @@
           const best = rated.slice().sort((a, b) => b.rating - a.rating || new Date(b.createdAt) - new Date(a.createdAt))[0];
           return `
             <tr class="border-t border-white/5">
-              <td class="py-2 pr-3 whitespace-nowrap">${c.icon} ${c.short}</td>
+              <td class="py-2 pr-3 whitespace-nowrap"><span class="inline-flex items-center gap-2">${condDot(c.id)}${c.short}</span></td>
               <td class="py-2 pr-3 tabular-nums">${rs.length}</td>
               <td class="py-2 pr-3 tabular-nums whitespace-nowrap">${avg('frontPsi')} / ${avg('rearPsi')}</td>
               <td class="py-2 pr-3 tabular-nums">${rated.length ? avgOf(rated.map(l => l.rating)).toFixed(1) + '★' : '–'}</td>
@@ -1554,11 +1556,11 @@
           <p class="text-sm text-slate-400">Download every ride (${logs.length}) with trails, conditions, pressures, clickers, ratings and notes.</p>
           <div class="mt-4 grid sm:grid-cols-2 gap-3">
             <button type="button" data-export="csv" class="rounded-xl border border-white/10 bg-ink-850 hover:bg-ink-700 p-4 text-left transition">
-              <p class="text-sm font-semibold text-white">⬇ Download CSV</p>
+              <p class="flex items-center gap-2 text-sm font-semibold text-white"><span class="text-trail-400"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11"/><path d="M7 10l5 5 5-5"/><path d="M5 20h14"/></svg></span>Download CSV</p>
               <p class="mt-0.5 text-xs text-slate-400">Opens in Excel, Numbers or Google Sheets.</p>
             </button>
             <button type="button" data-export="pdf" class="rounded-xl border border-white/10 bg-ink-850 hover:bg-ink-700 p-4 text-left transition">
-              <p class="text-sm font-semibold text-white">🧾 Save PDF report</p>
+              <p class="flex items-center gap-2 text-sm font-semibold text-white"><span class="text-trail-400"><svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4"/><path d="M10 12h5M10 16h5"/></svg></span>Save PDF report</p>
               <p class="mt-0.5 text-xs text-slate-400">Opens a printable report. Choose "Save as PDF".</p>
             </button>
           </div>`;
@@ -1771,7 +1773,7 @@
         [2000, 5000, 10000, 20000].forEach(ms => setTimeout(async () => {
           if (isPro || !user) return;
           await pull();
-          if (isPro) toast('Welcome to TrailSync Pro! 🤘');
+          if (isPro) toast('Welcome to TrailSync Pro');
         }, ms));
       }
 
