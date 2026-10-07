@@ -430,7 +430,7 @@
 
           <ul class="mt-6 space-y-3 text-sm">
             <li class="flex gap-3"><span class="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-trail-500/20 text-trail-400 text-xs">✓</span><span><b class="text-white">Smart PSI &amp; suspension recommendations</b> <span class="text-slate-400">from rider weight, tire setup, trail condition and surface</span></span></li>
-            <li class="flex gap-3"><span class="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-trail-500/20 text-trail-400 text-xs">✓</span><span><b class="text-white">Setup trends &amp; your best setup per condition</b> <span class="text-slate-400">to see what works on hero dirt vs. greasy days</span></span></li>
+            <li class="flex gap-3"><span class="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-trail-500/20 text-trail-400 text-xs">✓</span><span><b class="text-white">Setup trends &amp; your best setup per condition</b> <span class="text-slate-400">to see what works on perfect-grip vs. slippery days</span></span></li>
             <li class="flex gap-3"><span class="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-trail-500/20 text-trail-400 text-xs">✓</span><span><b class="text-white">Unlimited bikes</b> <span class="text-slate-400">each with its own tire setup and history</span></span></li>
             <li class="flex gap-3"><span class="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-trail-500/20 text-trail-400 text-xs">✓</span><span><b class="text-white">Export to PDF / CSV</b> <span class="text-slate-400">to share with your mechanic</span></span></li>
           </ul>
@@ -531,11 +531,11 @@
 
       // Moisture / grip scale, driest to wettest
       const CONDITIONS = [
-        { id: 'moondust', label: 'Moon dust',             short: 'Moon dust', badge: 'cond-badge cb-moondust',  bar: 'from-orange-200 to-orange-400' },
+        { id: 'moondust', label: 'Powdery · moon dust',   short: 'Powdery', badge: 'cond-badge cb-moondust',  bar: 'from-orange-200 to-orange-400' },
         { id: 'dusty',    label: 'Dusty / loose',         short: 'Dusty',     badge: 'cond-badge cb-dusty',     bar: 'from-amber-300 to-amber-500' },
         { id: 'hardpack', label: 'Hardpack',              short: 'Hardpack',  badge: 'cond-badge cb-hardpack',  bar: 'from-yellow-100 to-yellow-400' },
-        { id: 'hero',     label: 'Hero dirt / tacky',     short: 'Hero dirt', badge: 'cond-badge cb-hero', bar: 'from-emerald-300 to-emerald-600' },
-        { id: 'greasy',   label: 'Damp / greasy',         short: 'Greasy',    badge: 'cond-badge cb-greasy',        bar: 'from-teal-300 to-teal-600' },
+        { id: 'hero',     label: 'Perfect grip · hero dirt', short: 'Perfect grip', badge: 'cond-badge cb-hero', bar: 'from-emerald-300 to-emerald-600' },
+        { id: 'greasy',   label: 'Slippery · greasy',     short: 'Slippery',    badge: 'cond-badge cb-greasy',        bar: 'from-teal-300 to-teal-600' },
         { id: 'wet',      label: 'Wet',                   short: 'Wet',       badge: 'cond-badge cb-wet',           bar: 'from-sky-500 to-sky-700' },
         { id: 'muddy',    label: 'Muddy / peanut butter', short: 'Muddy',     badge: 'cond-badge cb-muddy',     bar: 'from-amber-600 to-amber-900' },
         { id: 'snow',     label: 'Snow / frozen',         short: 'Snow',      badge: 'cond-badge cb-snow',  bar: 'from-gray-200 to-gray-400' }
@@ -1675,7 +1675,7 @@
           <table><thead><tr><th>Bike</th><th>Fork</th><th>Shock</th><th>Tires</th><th>Start PSI F / R</th><th>Sag fork / shock</th></tr></thead><tbody>${bikeRows}</tbody></table>
           <h2>Rides (${logs.length})</h2>
           <table><thead><tr><th>Date</th><th>Bike</th><th>Trails</th><th>Conditions</th><th>PSI F / R</th><th>Clicks F / R</th><th>Feel</th><th>Notes</th></tr></thead><tbody>${rideRows || '<tr><td colspan="8">No rides yet.</td></tr>'}</tbody></table>
-          <p style="margin-top:16px">Start PSI is for hero dirt with no surface adjustments.</p>
+          <p style="margin-top:16px">Start PSI is for perfect-grip conditions with no surface adjustments.</p>
         </body></html>`);
         win.document.close();
         win.focus();
