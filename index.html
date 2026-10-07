@@ -1,33 +1,99 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TrailSync · Suspension & Trail Log</title>
-  <meta name="theme-color" content="#0a0d12" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#f4f5f2" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#101311" media="(prefers-color-scheme: dark)" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+    // Colors are CSS variables (see the style block), so the whole app follows the phone's light/dark setting.
+    // "white" is the main ink and "slate" the secondary inks; they flip between themes.
+    const v = (name) => `rgb(var(--${name}) / <alpha-value>)`;
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
-          fontFamily: { sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'] },
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            display: ['"Barlow Condensed"', 'Inter', 'ui-sans-serif', 'sans-serif']
+          },
           colors: {
-            trail: { 50: '#f0fdf4', 400: '#4ade80', 500: '#22c55e', 600: '#16a34a' },
-            ink: { 950: '#0a0d12', 900: '#10141b', 850: '#151a23', 800: '#1b212c', 700: '#262e3b' }
+            white: v('fg'),
+            black: v('shade'),
+            slate: { 100: v('s100'), 200: v('s200'), 300: v('s300'), 400: v('s400'), 500: v('s500'), 600: v('s600'), 700: v('s700') },
+            ink: { 950: v('page'), 900: v('card'), 850: v('field'), 800: v('raised'), 700: v('hover') },
+            trail: { 50: v('g50'), 400: v('g400'), 500: v('g500'), 600: v('g600') },
+            pro: { 200: v('p200'), 300: v('p300'), 400: v('p400'), 500: v('p500'), 600: v('p600') },
+            onaccent: v('onaccent')
+          },
+          borderRadius: { lg: '6px', xl: '8px', '2xl': '10px', '3xl': '12px' },
+          boxShadow: {
+            lg: '0 1px 2px rgb(var(--shade) / .06)',
+            xl: '0 1px 3px rgb(var(--shade) / .08)',
+            '2xl': '0 12px 32px rgb(var(--shade) / .18)'
           }
         }
       }
     };
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    body { background: radial-gradient(1200px 600px at 10% -10%, rgba(34,197,94,0.10), transparent 60%), #0a0d12; }
+    /* Light: Strava-style off-white page, white cards, forest green accent, gold for Pro. */
+    :root {
+      --page: 244 245 242; --card: 255 255 255; --field: 247 248 246; --raised: 238 240 236; --hover: 228 231 226;
+      --fg: 26 32 28; --shade: 20 28 22;
+      --s100: 20 26 22; --s200: 33 40 35; --s300: 52 61 55; --s400: 86 96 89; --s500: 108 118 111; --s600: 138 147 141; --s700: 200 206 201;
+      --g50: 232 244 236; --g400: 30 110 61; --g500: 31 122 66; --g600: 23 96 51;
+      --p200: 120 76 0; --p300: 138 90 0; --p400: 196 140 22; --p500: 214 155 30; --p600: 180 125 15;
+      --onaccent: 255 255 255;
+      --topo: 31 122 66; --topo-alpha: .10;
+      --chart-front: #c0620e; --chart-rear: #23884c;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --page: 16 19 17; --card: 24 29 26; --field: 30 36 32; --raised: 36 43 39; --hover: 46 54 49;
+        --fg: 240 243 240; --shade: 0 0 0;
+        --s100: 241 244 241; --s200: 222 228 223; --s300: 196 205 198; --s400: 152 163 155; --s500: 122 133 125; --s600: 92 102 95; --s700: 64 72 66;
+        --g50: 20 40 28; --g400: 92 196 126; --g500: 62 172 104; --g600: 46 146 86;
+        --p200: 250 214 140; --p300: 244 196 96; --p400: 232 170 50; --p500: 236 176 52; --p600: 214 150 30;
+        --onaccent: 12 16 13;
+        --topo: 92 196 126; --topo-alpha: .09;
+        --chart-front: #d0742a; --chart-rear: #3aa862;
+      }
+    }
+    body { background: rgb(var(--page)); }
+    h1, h2, h3, .font-display { font-family: "Barlow Condensed", Inter, ui-sans-serif, sans-serif; letter-spacing: .01em; }
+    h2 { text-transform: uppercase; letter-spacing: .04em; font-size: 1.05rem !important; font-weight: 700 !important; }
+    .num { font-family: "Barlow Condensed", Inter, ui-sans-serif, sans-serif; font-weight: 700; letter-spacing: .01em; font-variant-numeric: tabular-nums; }
+    .topo { position: absolute; inset: 0; width: 100%; height: 100%; color: rgb(var(--topo)); opacity: var(--topo-alpha); pointer-events: none; }
+    .cond-badge { background: var(--cb-bg); color: var(--cb-fg); border-color: var(--cb-bd); }
+    /* Condition badges: tinted chips that keep contrast in both themes. */
+    .cb-moondust { --cb-fg: #9a4a12; --cb-bg: #fdf0e6; --cb-bd: #f2c9a8; }
+    .cb-dusty    { --cb-fg: #8a5a00; --cb-bg: #fdf5e1; --cb-bd: #ecd28f; }
+    .cb-hardpack { --cb-fg: #6b5a1e; --cb-bg: #f7f3e3; --cb-bd: #ddd1a2; }
+    .cb-hero     { --cb-fg: #17663a; --cb-bg: #e7f5ec; --cb-bd: #a9d9bb; }
+    .cb-greasy   { --cb-fg: #0f6a62; --cb-bg: #e3f4f1; --cb-bd: #9fd6cd; }
+    .cb-wet      { --cb-fg: #1d5f8a; --cb-bg: #e6f1f8; --cb-bd: #a7cbe3; }
+    .cb-muddy    { --cb-fg: #6e4420; --cb-bg: #f3ebe3; --cb-bd: #d3b597; }
+    .cb-snow     { --cb-fg: #475569; --cb-bg: #eef1f5; --cb-bd: #c6ced9; }
+    @media (prefers-color-scheme: dark) {
+      .cb-moondust { --cb-fg: #f5bf94; --cb-bg: rgb(245 191 148 / .10); --cb-bd: rgb(245 191 148 / .30); }
+      .cb-dusty    { --cb-fg: #f2cf7a; --cb-bg: rgb(242 207 122 / .10); --cb-bd: rgb(242 207 122 / .30); }
+      .cb-hardpack { --cb-fg: #e8dca8; --cb-bg: rgb(232 220 168 / .10); --cb-bd: rgb(232 220 168 / .28); }
+      .cb-hero     { --cb-fg: #86dba3; --cb-bg: rgb(134 219 163 / .10); --cb-bd: rgb(134 219 163 / .30); }
+      .cb-greasy   { --cb-fg: #7fd6c9; --cb-bg: rgb(127 214 201 / .10); --cb-bd: rgb(127 214 201 / .30); }
+      .cb-wet      { --cb-fg: #8fc3e6; --cb-bg: rgb(143 195 230 / .10); --cb-bd: rgb(143 195 230 / .30); }
+      .cb-muddy    { --cb-fg: #d9a877; --cb-bg: rgb(217 168 119 / .12); --cb-bd: rgb(217 168 119 / .35); }
+      .cb-snow     { --cb-fg: #d5dce6; --cb-bg: rgb(213 220 230 / .10); --cb-bd: rgb(213 220 230 / .28); }
+    }
     input[type=number]::-webkit-inner-spin-button { opacity: .4; }
+    select { color-scheme: light dark; }
     .modal-enter { animation: modalIn .25s cubic-bezier(.2,.8,.2,1) both; }
     .backdrop-enter { animation: fadeIn .2s ease-out both; }
     .card-enter { animation: cardIn .3s ease-out both; }
@@ -39,18 +105,19 @@
 <body class="min-h-screen text-slate-200 font-sans antialiased">
 
   <!-- Header -->
-  <header class="sticky top-0 z-30 border-b border-white/5 bg-ink-950/80 backdrop-blur">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+  <header class="sticky top-0 z-30 border-b border-white/10 bg-ink-900/90 backdrop-blur">
+    <svg class="topo" aria-hidden="true" viewBox="0 0 1440 120" preserveAspectRatio="xMidYMid slice" fill="none" stroke="currentColor" stroke-width="1"><path d="M208 30 209 33 207 36 203 38 199 40 195 41 192 43 188 43 184 44 180 43 176 43 173 43 168 43 163 43 158 41 156 39 156 35 158 32 160 30 161 28 160 26 160 23 160 20 163 17 167 15 171 14 175 14 180 13 185 14 188 16 191 18 192 21 193 23 196 24 200 25 205 27Z M237 30 238 36 233 42 226 46 218 50 210 53 203 55 196 57 188 57 180 57 173 56 165 56 156 56 145 56 137 53 132 47 133 41 137 35 141 30 142 26 140 21 139 15 140 9 146 4 153 1 162 -1 171 -3 180 -3 189 -2 197 1 201 7 204 12 207 16 212 19 221 21 230 24Z M266 30 267 40 259 48 247 54 236 59 225 64 215 68 204 70 192 71 180 70 169 69 157 70 143 70 127 69 115 64 109 56 111 46 117 37 122 30 122 24 119 16 117 7 120 -1 128 -9 140 -13 153 -17 166 -19 180 -20 194 -18 205 -12 212 -4 215 4 220 9 229 12 242 16 257 22Z M295 30 295 43 284 54 269 62 254 69 241 75 227 81 211 84 195 84 180 83 165 82 149 84 129 85 109 83 93 75 87 64 90 50 98 39 103 30 102 21 98 11 95 -1 100 -12 111 -21 127 -28 144 -33 161 -36 180 -37 198 -34 212 -26 221 -15 226 -5 233 2 246 6 265 11 284 19Z M325 30 322 46 308 59 290 70 272 78 256 86 238 93 219 97 199 97 180 96 161 96 140 98 116 100 91 97 72 87 65 71 70 55 80 41 85 30 82 19 76 6 73 -9 79 -23 94 -34 113 -42 134 -48 157 -53 180 -54 202 -49 220 -38 231 -25 237 -13 247 -5 264 -0 289 5 312 15Z M354 30 349 49 332 65 311 77 290 88 271 98 250 106 227 110 203 110 180 109 157 110 132 113 102 115 72 111 51 98 45 79 52 59 62 43 66 30 61 17 53 1 50 -17 59 -34 77 -47 100 -57 125 -64 152 -70 180 -71 207 -64 227 -51 239 -34 248 -20 261 -12 283 -7 314 -0 341 12Z M383 30 376 52 355 70 331 84 308 97 286 109 262 119 234 123 206 123 180 122 153 124 123 128 87 131 53 125 30 108 25 86 34 63 44 45 47 30 39 14 29 -4 27 -25 38 -44 60 -60 87 -71 116 -80 147 -87 180 -88 211 -79 234 -63 248 -43 258 -28 275 -20 303 -15 339 -6 370 9Z M411 30 402 54 378 75 351 92 326 107 302 121 273 131 242 136 210 136 180 136 149 139 113 144 72 147 34 139 10 119 6 93 16 67 27 47 27 30 17 12 5 -10 4 -33 18 -55 43 -72 73 -86 106 -97 142 -104 180 -104 215 -93 240 -74 256 -52 269 -36 290 -28 325 -22 366 -12 399 6Z M845 70 844 73 843 75 841 78 838 80 835 82 831 82 827 83 824 85 820 87 815 88 810 88 806 86 804 83 804 79 804 76 802 74 800 72 797 70 796 67 796 64 797 61 800 59 802 56 806 54 810 52 815 53 820 55 823 57 826 59 829 59 833 59 839 60 843 61 846 64 846 67Z M871 70 868 76 865 81 862 86 856 90 849 93 842 95 835 97 828 100 820 104 810 107 800 106 793 102 789 95 788 88 787 83 785 79 780 75 775 70 772 64 772 58 775 53 779 47 784 42 791 37 801 35 811 36 820 40 827 45 832 48 838 49 847 48 858 49 867 52 872 57 873 64Z M895 70 892 78 888 86 882 94 874 100 863 104 852 107 842 111 832 116 820 122 805 126 790 124 779 117 774 107 773 96 771 89 767 83 759 77 751 70 747 61 748 53 752 44 758 35 766 27 777 20 791 18 807 20 820 26 830 33 838 37 848 38 862 37 878 38 891 43 898 51 898 61Z M920 70 915 81 911 92 903 102 892 110 877 116 863 119 850 124 836 132 820 140 800 145 780 142 766 132 759 118 758 105 755 95 748 87 738 80 728 70 723 59 724 47 730 35 737 24 748 13 763 4 782 0 802 4 820 12 833 21 844 26 858 26 877 25 898 27 914 34 923 45 924 58Z M944 70 939 84 933 97 924 110 909 120 891 127 873 132 857 138 841 148 820 159 795 164 771 160 753 147 745 129 743 113 740 101 730 92 716 82 704 70 699 56 701 41 707 27 716 12 729 -2 748 -13 773 -17 798 -12 820 -1 836 9 850 15 868 14 892 13 918 15 938 24 948 39 948 55Z M968 70 963 87 956 103 944 118 927 130 905 137 884 144 865 153 845 165 820 178 790 184 761 178 741 161 732 140 729 121 724 107 711 96 694 85 680 70 674 53 677 35 684 18 695 0 711 -17 734 -30 764 -33 794 -27 820 -14 839 -2 856 3 879 2 908 0 939 4 962 15 973 33 973 52Z M992 70 986 90 979 108 965 126 944 139 918 148 895 156 873 167 850 183 820 197 785 204 751 196 729 175 719 150 715 129 708 113 692 101 672 87 656 70 650 50 653 29 661 9 674 -12 692 -32 719 -46 755 -50 790 -42 820 -27 842 -13 863 -8 890 -10 924 -13 960 -8 986 6 998 27 997 49Z M1323 10 1321 12 1319 14 1318 16 1318 19 1317 22 1315 25 1310 27 1305 27 1300 25 1296 23 1293 21 1290 20 1287 19 1284 18 1281 16 1279 15 1277 12 1275 10 1273 7 1273 4 1275 1 1279 -0 1285 -1 1290 -0 1294 -0 1297 -1 1300 -3 1304 -4 1309 -4 1313 -3 1316 -1 1319 1 1321 3 1322 5 1323 8Z M1345 10 1341 14 1338 18 1336 22 1336 28 1334 34 1329 40 1321 43 1310 43 1300 40 1292 35 1286 32 1281 30 1274 28 1268 26 1262 23 1258 19 1254 15 1250 10 1246 4 1246 -2 1250 -7 1259 -10 1270 -11 1280 -11 1287 -11 1293 -13 1300 -16 1309 -19 1318 -19 1326 -17 1332 -13 1337 -8 1341 -4 1345 0 1346 5Z M1367 10 1361 16 1357 22 1355 29 1354 37 1352 47 1345 55 1331 60 1315 59 1300 54 1289 47 1280 43 1271 40 1261 37 1251 34 1243 29 1237 24 1231 17 1224 10 1218 2 1218 -8 1226 -15 1240 -20 1256 -21 1270 -20 1281 -21 1289 -25 1300 -30 1313 -34 1327 -34 1339 -30 1348 -24 1355 -17 1362 -11 1367 -4 1369 3Z M1388 10 1381 18 1375 26 1373 35 1374 46 1371 60 1360 71 1341 77 1319 75 1300 67 1285 59 1273 53 1261 50 1248 47 1235 42 1224 36 1216 28 1207 20 1197 10 1190 -1 1191 -13 1201 -23 1221 -29 1242 -30 1261 -30 1274 -32 1286 -38 1300 -45 1318 -49 1336 -48 1352 -43 1364 -35 1374 -26 1382 -18 1389 -9 1391 1Z M1409 10 1400 20 1394 30 1393 42 1394 56 1390 73 1375 87 1351 93 1324 90 1300 81 1282 71 1266 64 1251 60 1234 56 1218 50 1206 42 1195 33 1183 22 1171 10 1162 -4 1163 -19 1178 -31 1203 -38 1229 -40 1251 -40 1267 -43 1282 -51 1300 -59 1322 -64 1345 -63 1365 -56 1379 -46 1392 -35 1403 -25 1411 -14 1413 -2Z M1429 10 1419 22 1413 34 1413 48 1415 67 1409 87 1391 103 1361 109 1328 104 1300 94 1278 83 1260 75 1240 71 1220 66 1202 58 1187 48 1173 37 1159 25 1143 10 1133 -7 1136 -25 1155 -39 1185 -47 1217 -48 1242 -49 1260 -54 1278 -64 1300 -74 1327 -80 1354 -78 1377 -69 1395 -56 1410 -44 1423 -32 1433 -18 1435 -4Z"/></svg>
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
       <div class="flex items-center gap-3">
-        <div class="h-9 w-9 rounded-xl bg-gradient-to-br from-trail-400 to-emerald-700 grid place-items-center shadow-lg shadow-emerald-900/40">
-          <svg viewBox="0 0 24 24" class="h-5 w-5 text-ink-950" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20l6-10 4 6 3-4 5 8z"/></svg>
+        <div class="h-9 w-9 rounded-xl bg-trail-500 grid place-items-center">
+          <svg viewBox="0 0 24 24" class="h-5 w-5 text-onaccent" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20l6-10 4 6 3-4 5 8z"/></svg>
         </div>
         <div>
-          <h1 class="text-lg font-extrabold tracking-tight text-white leading-none">TrailSync</h1>
+          <h1 class="text-2xl font-extrabold uppercase tracking-wide text-white leading-none">TrailSync</h1>
           <p class="text-[11px] uppercase tracking-[0.18em] text-slate-500 mt-1">Dial it in. Ride it out.</p>
         </div>
       </div>
-      <button id="premiumBtn" class="group relative inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 shadow-lg shadow-violet-900/40 hover:shadow-violet-700/50 hover:brightness-110 transition">
+      <button id="premiumBtn" class="group relative inline-flex items-center gap-2 rounded-lg px-4 py-2.5 text-sm font-bold uppercase tracking-wide text-[#1a1408] bg-pro-500 hover:bg-pro-400 transition">
         <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l2.9 6.9L22 10l-5.5 4.7L18.2 22 12 18.3 5.8 22l1.7-7.3L2 10l7.1-1.1z"/></svg>
         <span id="premiumLabelLong" class="hidden sm:inline">Unlock Premium Insights with Stripe</span>
         <span id="premiumLabelShort" class="sm:hidden">Premium</span>
@@ -67,8 +134,8 @@
         <button id="logoutBtn" type="button" class="shrink-0 rounded-md px-2 py-1 font-medium text-slate-400 hover:text-white hover:bg-white/5 transition">Log out</button>
       </div>
     </div>
-    <div id="localBar" class="hidden border-t border-amber-400/10 bg-amber-400/5">
-      <p class="max-w-6xl mx-auto px-4 sm:px-6 py-2 text-xs text-amber-200/80">Local mode: rides are saved on this device only. Add your Supabase keys to turn on accounts and sync.</p>
+    <div id="localBar" class="hidden border-t border-pro-400/20 bg-pro-500/10">
+      <p class="max-w-6xl mx-auto px-4 sm:px-6 py-2 text-xs text-pro-200">Local mode: rides are saved on this device only. Add your Supabase keys to turn on accounts and sync.</p>
     </div>
   </header>
 
@@ -78,19 +145,19 @@
     <section class="grid grid-cols-2 lg:grid-cols-4 gap-4" aria-label="Summary">
       <div class="rounded-2xl bg-ink-900 border border-white/5 p-4">
         <p class="text-xs text-slate-500 uppercase tracking-wider">Rides · Trails</p>
-        <p id="statRides" class="mt-2 text-3xl font-bold text-white">0</p>
+        <p id="statRides" class="mt-2 text-4xl num text-white">0</p>
       </div>
       <div class="rounded-2xl bg-ink-900 border border-white/5 p-4">
         <p class="text-xs text-slate-500 uppercase tracking-wider">Avg Front PSI</p>
-        <p id="statFront" class="mt-2 text-3xl font-bold text-white">–</p>
+        <p id="statFront" class="mt-2 text-4xl num text-white">–</p>
       </div>
       <div class="rounded-2xl bg-ink-900 border border-white/5 p-4">
         <p class="text-xs text-slate-500 uppercase tracking-wider">Avg Rear PSI</p>
-        <p id="statRear" class="mt-2 text-3xl font-bold text-white">–</p>
+        <p id="statRear" class="mt-2 text-4xl num text-white">–</p>
       </div>
       <div class="rounded-2xl bg-ink-900 border border-white/5 p-4">
         <p class="text-xs text-slate-500 uppercase tracking-wider">Top Condition</p>
-        <p id="statCond" class="mt-2 text-3xl font-bold text-white">–</p>
+        <p id="statCond" class="mt-2 text-4xl num text-white">–</p>
       </div>
     </section>
 
@@ -103,13 +170,13 @@
         <section class="rounded-2xl bg-ink-900 border border-white/5 p-6 shadow-xl shadow-black/20">
           <div class="flex items-center justify-between mb-5">
             <h2 class="text-base font-semibold text-white flex items-center gap-2">
-              <span class="h-2 w-2 rounded-full bg-trail-400"></span> Bike Profile
+              <span class="h-4 w-1 rounded-full bg-trail-500"></span> Bike Profile
             </h2>
             <span id="profileSaved" class="text-xs text-trail-400 opacity-0 transition-opacity">Saved ✓</span>
           </div>
           <div class="mb-4 flex items-center gap-2">
             <select id="bikeSelect" aria-label="Bike" class="flex-1 min-w-0 rounded-lg bg-ink-850 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-trail-500/60"></select>
-            <button type="button" id="addBikeBtn" class="shrink-0 rounded-lg border border-white/10 bg-ink-850 hover:bg-ink-700 px-3 py-2 text-sm font-medium text-slate-300 hover:text-white transition">+ Bike <span data-pro-badge class="text-[10px] font-bold text-violet-300">PRO</span></button>
+            <button type="button" id="addBikeBtn" class="shrink-0 rounded-lg border border-white/10 bg-ink-850 hover:bg-ink-700 px-3 py-2 text-sm font-medium text-slate-300 hover:text-white transition">+ Bike <span data-pro-badge class="rounded bg-pro-500 px-1 py-px text-[10px] font-bold text-[#1a1408]">PRO</span></button>
           </div>
           <form id="profileForm" class="space-y-4" autocomplete="off">
             <label class="block">
@@ -190,7 +257,7 @@
         <!-- Log Entry -->
         <section class="rounded-2xl bg-ink-900 border border-white/5 p-6 shadow-xl shadow-black/20">
           <h2 class="text-base font-semibold text-white flex items-center gap-2 mb-5">
-            <span class="h-2 w-2 rounded-full bg-amber-400"></span> Log Entry
+            <span class="h-4 w-1 rounded-full bg-trail-500"></span> Log Entry
           </h2>
           <form id="logForm" class="space-y-4" autocomplete="off">
             <label id="logBikeField" class="hidden block">
@@ -213,10 +280,10 @@
               <button type="button" id="addTrailBtn" class="mt-3 w-full rounded-lg border border-dashed border-white/15 hover:border-trail-500/60 hover:bg-trail-500/5 py-2 text-sm font-medium text-slate-300 hover:text-trail-400 transition">+ Add another trail</button>
             </div>
 
-            <button type="button" id="suggestPsiBtn" class="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-violet-400/30 bg-violet-500/10 hover:bg-violet-500/20 py-2 text-sm font-semibold text-violet-200 transition">
-              ✨ Suggest PSI for these trails <span data-pro-badge class="text-[10px] font-bold text-violet-300">PRO</span>
+            <button type="button" id="suggestPsiBtn" class="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-pro-400/50 bg-pro-500/10 hover:bg-pro-500/20 py-2 text-sm font-semibold text-pro-200 transition">
+              ✨ Suggest PSI for these trails <span data-pro-badge class="rounded bg-pro-500 px-1 py-px text-[10px] font-bold text-[#1a1408]">PRO</span>
             </button>
-            <p id="suggestNote" class="hidden -mt-2 text-xs text-violet-200/80"></p>
+            <p id="suggestNote" class="hidden -mt-2 text-xs text-pro-200"></p>
             <div class="grid grid-cols-2 gap-3">
               <label class="block">
                 <span class="text-xs font-medium text-slate-400">Front PSI</span>
@@ -252,7 +319,7 @@
               </div>
             </div>
 
-            <button type="submit" class="w-full rounded-lg bg-trail-500 hover:bg-trail-400 py-2.5 text-sm font-bold text-ink-950 shadow-lg shadow-emerald-900/30 transition">+ Save Ride Log</button>
+            <button type="submit" class="w-full rounded-lg bg-trail-500 hover:bg-trail-400 py-2.5 text-sm font-bold text-onaccent uppercase tracking-wide transition">+ Save Ride Log</button>
           </form>
         </section>
       </div>
@@ -260,10 +327,10 @@
       <!-- Right column: History -->
       <section class="lg:col-span-3">
         <!-- Pro Insights -->
-        <div id="insights" class="mb-8 rounded-2xl bg-ink-900 border border-violet-400/20 shadow-xl shadow-black/20 overflow-hidden">
+        <div id="insights" class="mb-8 rounded-2xl bg-ink-900 border border-white/10 border-t-4 border-t-pro-500 shadow-xl overflow-hidden">
           <div class="flex flex-wrap items-center justify-between gap-3 px-5 pt-5">
             <h2 class="text-base font-semibold text-white flex items-center gap-2">
-              <span class="h-2 w-2 rounded-full bg-violet-400"></span> Pro Insights
+              <span class="h-4 w-1 rounded-full bg-pro-500"></span> Pro Insights
             </h2>
             <div id="insightTabs" class="flex rounded-lg bg-ink-850 p-1 text-xs font-semibold">
               <button type="button" data-tab="recommend" class="rounded-md px-3 py-1.5 transition">Setup</button>
@@ -276,7 +343,7 @@
 
         <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
           <h2 class="text-base font-semibold text-white flex items-center gap-2">
-            <span class="h-2 w-2 rounded-full bg-sky-400"></span> Ride History
+            <span class="h-4 w-1 rounded-full bg-trail-500"></span> Ride History
           </h2>
           <div class="flex items-center gap-2">
             <select id="filterCond" class="rounded-lg bg-ink-900 border border-white/10 px-3 py-1.5 text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-trail-500/60">
@@ -300,14 +367,15 @@
   </footer>
 
   <!-- Auth Screen -->
-  <div id="authScreen" class="hidden fixed inset-0 z-40 overflow-y-auto" style="background: radial-gradient(900px 500px at 50% -10%, rgba(34,197,94,0.14), transparent 60%), #0a0d12;">
-    <div class="min-h-full flex items-center justify-center p-4">
+  <div id="authScreen" class="hidden fixed inset-0 z-40 overflow-y-auto bg-ink-950">
+    <div class="absolute inset-x-0 top-0 h-64 overflow-hidden"><svg class="topo" aria-hidden="true" viewBox="0 0 1440 120" preserveAspectRatio="xMidYMid slice" fill="none" stroke="currentColor" stroke-width="1"><path d="M208 30 209 33 207 36 203 38 199 40 195 41 192 43 188 43 184 44 180 43 176 43 173 43 168 43 163 43 158 41 156 39 156 35 158 32 160 30 161 28 160 26 160 23 160 20 163 17 167 15 171 14 175 14 180 13 185 14 188 16 191 18 192 21 193 23 196 24 200 25 205 27Z M237 30 238 36 233 42 226 46 218 50 210 53 203 55 196 57 188 57 180 57 173 56 165 56 156 56 145 56 137 53 132 47 133 41 137 35 141 30 142 26 140 21 139 15 140 9 146 4 153 1 162 -1 171 -3 180 -3 189 -2 197 1 201 7 204 12 207 16 212 19 221 21 230 24Z M266 30 267 40 259 48 247 54 236 59 225 64 215 68 204 70 192 71 180 70 169 69 157 70 143 70 127 69 115 64 109 56 111 46 117 37 122 30 122 24 119 16 117 7 120 -1 128 -9 140 -13 153 -17 166 -19 180 -20 194 -18 205 -12 212 -4 215 4 220 9 229 12 242 16 257 22Z M295 30 295 43 284 54 269 62 254 69 241 75 227 81 211 84 195 84 180 83 165 82 149 84 129 85 109 83 93 75 87 64 90 50 98 39 103 30 102 21 98 11 95 -1 100 -12 111 -21 127 -28 144 -33 161 -36 180 -37 198 -34 212 -26 221 -15 226 -5 233 2 246 6 265 11 284 19Z M325 30 322 46 308 59 290 70 272 78 256 86 238 93 219 97 199 97 180 96 161 96 140 98 116 100 91 97 72 87 65 71 70 55 80 41 85 30 82 19 76 6 73 -9 79 -23 94 -34 113 -42 134 -48 157 -53 180 -54 202 -49 220 -38 231 -25 237 -13 247 -5 264 -0 289 5 312 15Z M354 30 349 49 332 65 311 77 290 88 271 98 250 106 227 110 203 110 180 109 157 110 132 113 102 115 72 111 51 98 45 79 52 59 62 43 66 30 61 17 53 1 50 -17 59 -34 77 -47 100 -57 125 -64 152 -70 180 -71 207 -64 227 -51 239 -34 248 -20 261 -12 283 -7 314 -0 341 12Z M383 30 376 52 355 70 331 84 308 97 286 109 262 119 234 123 206 123 180 122 153 124 123 128 87 131 53 125 30 108 25 86 34 63 44 45 47 30 39 14 29 -4 27 -25 38 -44 60 -60 87 -71 116 -80 147 -87 180 -88 211 -79 234 -63 248 -43 258 -28 275 -20 303 -15 339 -6 370 9Z M411 30 402 54 378 75 351 92 326 107 302 121 273 131 242 136 210 136 180 136 149 139 113 144 72 147 34 139 10 119 6 93 16 67 27 47 27 30 17 12 5 -10 4 -33 18 -55 43 -72 73 -86 106 -97 142 -104 180 -104 215 -93 240 -74 256 -52 269 -36 290 -28 325 -22 366 -12 399 6Z M845 70 844 73 843 75 841 78 838 80 835 82 831 82 827 83 824 85 820 87 815 88 810 88 806 86 804 83 804 79 804 76 802 74 800 72 797 70 796 67 796 64 797 61 800 59 802 56 806 54 810 52 815 53 820 55 823 57 826 59 829 59 833 59 839 60 843 61 846 64 846 67Z M871 70 868 76 865 81 862 86 856 90 849 93 842 95 835 97 828 100 820 104 810 107 800 106 793 102 789 95 788 88 787 83 785 79 780 75 775 70 772 64 772 58 775 53 779 47 784 42 791 37 801 35 811 36 820 40 827 45 832 48 838 49 847 48 858 49 867 52 872 57 873 64Z M895 70 892 78 888 86 882 94 874 100 863 104 852 107 842 111 832 116 820 122 805 126 790 124 779 117 774 107 773 96 771 89 767 83 759 77 751 70 747 61 748 53 752 44 758 35 766 27 777 20 791 18 807 20 820 26 830 33 838 37 848 38 862 37 878 38 891 43 898 51 898 61Z M920 70 915 81 911 92 903 102 892 110 877 116 863 119 850 124 836 132 820 140 800 145 780 142 766 132 759 118 758 105 755 95 748 87 738 80 728 70 723 59 724 47 730 35 737 24 748 13 763 4 782 0 802 4 820 12 833 21 844 26 858 26 877 25 898 27 914 34 923 45 924 58Z M944 70 939 84 933 97 924 110 909 120 891 127 873 132 857 138 841 148 820 159 795 164 771 160 753 147 745 129 743 113 740 101 730 92 716 82 704 70 699 56 701 41 707 27 716 12 729 -2 748 -13 773 -17 798 -12 820 -1 836 9 850 15 868 14 892 13 918 15 938 24 948 39 948 55Z M968 70 963 87 956 103 944 118 927 130 905 137 884 144 865 153 845 165 820 178 790 184 761 178 741 161 732 140 729 121 724 107 711 96 694 85 680 70 674 53 677 35 684 18 695 0 711 -17 734 -30 764 -33 794 -27 820 -14 839 -2 856 3 879 2 908 0 939 4 962 15 973 33 973 52Z M992 70 986 90 979 108 965 126 944 139 918 148 895 156 873 167 850 183 820 197 785 204 751 196 729 175 719 150 715 129 708 113 692 101 672 87 656 70 650 50 653 29 661 9 674 -12 692 -32 719 -46 755 -50 790 -42 820 -27 842 -13 863 -8 890 -10 924 -13 960 -8 986 6 998 27 997 49Z M1323 10 1321 12 1319 14 1318 16 1318 19 1317 22 1315 25 1310 27 1305 27 1300 25 1296 23 1293 21 1290 20 1287 19 1284 18 1281 16 1279 15 1277 12 1275 10 1273 7 1273 4 1275 1 1279 -0 1285 -1 1290 -0 1294 -0 1297 -1 1300 -3 1304 -4 1309 -4 1313 -3 1316 -1 1319 1 1321 3 1322 5 1323 8Z M1345 10 1341 14 1338 18 1336 22 1336 28 1334 34 1329 40 1321 43 1310 43 1300 40 1292 35 1286 32 1281 30 1274 28 1268 26 1262 23 1258 19 1254 15 1250 10 1246 4 1246 -2 1250 -7 1259 -10 1270 -11 1280 -11 1287 -11 1293 -13 1300 -16 1309 -19 1318 -19 1326 -17 1332 -13 1337 -8 1341 -4 1345 0 1346 5Z M1367 10 1361 16 1357 22 1355 29 1354 37 1352 47 1345 55 1331 60 1315 59 1300 54 1289 47 1280 43 1271 40 1261 37 1251 34 1243 29 1237 24 1231 17 1224 10 1218 2 1218 -8 1226 -15 1240 -20 1256 -21 1270 -20 1281 -21 1289 -25 1300 -30 1313 -34 1327 -34 1339 -30 1348 -24 1355 -17 1362 -11 1367 -4 1369 3Z M1388 10 1381 18 1375 26 1373 35 1374 46 1371 60 1360 71 1341 77 1319 75 1300 67 1285 59 1273 53 1261 50 1248 47 1235 42 1224 36 1216 28 1207 20 1197 10 1190 -1 1191 -13 1201 -23 1221 -29 1242 -30 1261 -30 1274 -32 1286 -38 1300 -45 1318 -49 1336 -48 1352 -43 1364 -35 1374 -26 1382 -18 1389 -9 1391 1Z M1409 10 1400 20 1394 30 1393 42 1394 56 1390 73 1375 87 1351 93 1324 90 1300 81 1282 71 1266 64 1251 60 1234 56 1218 50 1206 42 1195 33 1183 22 1171 10 1162 -4 1163 -19 1178 -31 1203 -38 1229 -40 1251 -40 1267 -43 1282 -51 1300 -59 1322 -64 1345 -63 1365 -56 1379 -46 1392 -35 1403 -25 1411 -14 1413 -2Z M1429 10 1419 22 1413 34 1413 48 1415 67 1409 87 1391 103 1361 109 1328 104 1300 94 1278 83 1260 75 1240 71 1220 66 1202 58 1187 48 1173 37 1159 25 1143 10 1133 -7 1136 -25 1155 -39 1185 -47 1217 -48 1242 -49 1260 -54 1278 -64 1300 -74 1327 -80 1354 -78 1377 -69 1395 -56 1410 -44 1423 -32 1433 -18 1435 -4Z"/></svg></div>
+    <div class="relative min-h-full flex items-center justify-center p-4">
       <div class="w-full max-w-sm py-10">
         <div class="flex flex-col items-center text-center">
-          <div class="h-12 w-12 rounded-2xl bg-gradient-to-br from-trail-400 to-emerald-700 grid place-items-center shadow-lg shadow-emerald-900/40">
-            <svg viewBox="0 0 24 24" class="h-6 w-6 text-ink-950" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20l6-10 4 6 3-4 5 8z"/></svg>
+          <div class="h-12 w-12 rounded-2xl bg-trail-500 grid place-items-center">
+            <svg viewBox="0 0 24 24" class="h-6 w-6 text-onaccent" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20l6-10 4 6 3-4 5 8z"/></svg>
           </div>
-          <h1 class="mt-4 text-2xl font-extrabold tracking-tight text-white">TrailSync</h1>
+          <h1 class="mt-4 text-3xl font-extrabold uppercase tracking-wide text-white">TrailSync</h1>
           <p class="mt-1 text-sm text-slate-400">Your suspension and tire log, on every device.</p>
         </div>
 
@@ -328,7 +396,7 @@
               <span id="passwordLabel" class="text-xs font-medium text-slate-400">Password</span>
               <input name="password" type="password" autocomplete="current-password" placeholder="At least 6 characters" class="mt-1.5 w-full rounded-lg bg-ink-850 border border-white/10 px-3 py-2.5 text-base sm:text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-trail-500/60 focus:border-transparent" />
             </label>
-            <button id="authSubmit" type="submit" class="w-full rounded-lg bg-trail-500 hover:bg-trail-400 disabled:opacity-60 disabled:cursor-wait py-2.5 text-sm font-bold text-ink-950 shadow-lg shadow-emerald-900/30 transition">Log in</button>
+            <button id="authSubmit" type="submit" class="w-full rounded-lg bg-trail-500 hover:bg-trail-400 disabled:opacity-60 disabled:cursor-wait py-2.5 text-sm font-bold text-onaccent uppercase tracking-wide transition">Log in</button>
           </form>
 
           <p id="authMsg" role="status" class="hidden mt-4 rounded-lg px-3 py-2 text-sm"></p>
@@ -347,19 +415,17 @@
   <div id="premiumModal" class="fixed inset-0 z-50 hidden" role="dialog" aria-modal="true" aria-labelledby="premiumTitle">
     <div data-close class="backdrop-enter absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
     <div class="relative min-h-full flex items-center justify-center p-4">
-      <div class="modal-enter relative w-full max-w-lg overflow-hidden rounded-3xl border border-white/10 bg-ink-900 shadow-2xl shadow-violet-950/50">
-        <div class="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-violet-600/30 blur-3xl"></div>
-        <div class="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-emerald-500/20 blur-3xl"></div>
+      <div class="modal-enter relative w-full max-w-lg overflow-hidden rounded-3xl border border-white/10 border-t-4 border-t-pro-500 bg-ink-900 shadow-2xl">
 
         <button data-close class="absolute top-4 right-4 z-10 h-9 w-9 grid place-items-center rounded-full bg-white/5 hover:bg-white/10 text-slate-400 hover:text-white transition" aria-label="Close">
           <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
 
         <div class="relative p-8">
-          <span class="inline-flex items-center gap-1.5 rounded-full bg-violet-500/15 border border-violet-400/30 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-violet-300">
+          <span class="inline-flex items-center gap-1.5 rounded bg-pro-500 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#1a1408]">
             ★ TrailSync Pro
           </span>
-          <h3 id="premiumTitle" class="mt-4 text-2xl font-extrabold text-white tracking-tight">Unlock Premium Insights</h3>
+          <h3 id="premiumTitle" class="mt-4 text-3xl font-extrabold uppercase text-white tracking-wide">Unlock Premium Insights</h3>
           <p id="premiumDesc" class="mt-2 text-sm text-slate-400">Turn your ride logs into a perfectly dialed setup for every trail and condition.</p>
 
           <ul class="mt-6 space-y-3 text-sm">
@@ -372,22 +438,22 @@
           <div class="mt-7 grid grid-cols-2 gap-3" id="planGroup">
             <label class="cursor-pointer">
               <input type="radio" name="plan" value="monthly" class="peer sr-only" />
-              <div class="rounded-2xl border border-white/10 bg-ink-850 p-4 peer-checked:border-violet-400 peer-checked:bg-violet-500/10 transition">
+              <div class="rounded-2xl border border-white/10 bg-ink-850 p-4 peer-checked:border-trail-500 peer-checked:bg-trail-500/10 peer-checked:ring-1 peer-checked:ring-trail-500 transition">
                 <p class="text-xs text-slate-400">Monthly</p>
-                <p class="mt-1 text-xl font-bold text-white">$3.99<span class="text-sm font-medium text-slate-500">/mo</span></p>
+                <p class="mt-1 text-3xl num text-white">$3.99<span class="text-sm font-medium text-slate-500">/mo</span></p>
               </div>
             </label>
             <label class="cursor-pointer">
               <input type="radio" name="plan" value="lifetime" class="peer sr-only" checked />
-              <div class="relative rounded-2xl border border-white/10 bg-ink-850 p-4 peer-checked:border-violet-400 peer-checked:bg-violet-500/10 transition">
-                <span class="absolute -top-2.5 right-3 rounded-full bg-trail-500 px-2 py-0.5 text-[10px] font-bold text-ink-950">BEST VALUE</span>
+              <div class="relative rounded-2xl border border-white/10 bg-ink-850 p-4 peer-checked:border-trail-500 peer-checked:bg-trail-500/10 peer-checked:ring-1 peer-checked:ring-trail-500 transition">
+                <span class="absolute -top-2.5 right-3 rounded bg-pro-500 px-2 py-0.5 text-[10px] font-bold text-[#1a1408]">BEST VALUE</span>
                 <p class="text-xs text-slate-400">Lifetime</p>
-                <p class="mt-1 text-xl font-bold text-white">$42.99<span class="text-sm font-medium text-slate-500"> once</span></p>
+                <p class="mt-1 text-3xl num text-white">$42.99<span class="text-sm font-medium text-slate-500"> once</span></p>
               </div>
             </label>
           </div>
 
-          <button id="checkoutBtn" class="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#635bff] hover:bg-[#7a73ff] py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-900/40 transition">
+          <button id="checkoutBtn" class="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-trail-500 hover:bg-trail-600 py-3.5 text-sm font-bold uppercase tracking-wide text-onaccent transition">
             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
             <span>Continue to secure checkout</span>
           </button>
@@ -465,14 +531,14 @@
 
       // Moisture / grip scale, driest to wettest
       const CONDITIONS = [
-        { id: 'moondust', label: 'Moon dust',             short: 'Moon dust', icon: '🌕', badge: 'bg-orange-300/10 text-orange-200 border-orange-300/30',  bar: 'from-orange-200 to-orange-400' },
-        { id: 'dusty',    label: 'Dusty / loose',         short: 'Dusty',     icon: '💨', badge: 'bg-amber-400/10 text-amber-300 border-amber-400/30',     bar: 'from-amber-300 to-amber-500' },
-        { id: 'hardpack', label: 'Hardpack',              short: 'Hardpack',  icon: '🧱', badge: 'bg-yellow-200/10 text-yellow-100 border-yellow-200/30',  bar: 'from-yellow-100 to-yellow-400' },
-        { id: 'hero',     label: 'Hero dirt / tacky',     short: 'Hero dirt', icon: '🤘', badge: 'bg-emerald-400/10 text-emerald-300 border-emerald-400/30', bar: 'from-emerald-300 to-emerald-600' },
-        { id: 'greasy',   label: 'Damp / greasy',         short: 'Greasy',    icon: '💧', badge: 'bg-teal-400/10 text-teal-300 border-teal-400/30',        bar: 'from-teal-300 to-teal-600' },
-        { id: 'wet',      label: 'Wet',                   short: 'Wet',       icon: '🌧️', badge: 'bg-sky-400/10 text-sky-300 border-sky-400/30',           bar: 'from-sky-400 to-blue-600' },
-        { id: 'muddy',    label: 'Muddy / peanut butter', short: 'Muddy',     icon: '🟤', badge: 'bg-amber-700/20 text-amber-500 border-amber-600/40',     bar: 'from-amber-600 to-amber-900' },
-        { id: 'snow',     label: 'Snow / frozen',         short: 'Snow',      icon: '❄️', badge: 'bg-indigo-200/10 text-indigo-100 border-indigo-200/30',  bar: 'from-indigo-100 to-indigo-400' }
+        { id: 'moondust', label: 'Moon dust',             short: 'Moon dust', icon: '🌕', badge: 'cond-badge cb-moondust',  bar: 'from-orange-200 to-orange-400' },
+        { id: 'dusty',    label: 'Dusty / loose',         short: 'Dusty',     icon: '💨', badge: 'cond-badge cb-dusty',     bar: 'from-amber-300 to-amber-500' },
+        { id: 'hardpack', label: 'Hardpack',              short: 'Hardpack',  icon: '🧱', badge: 'cond-badge cb-hardpack',  bar: 'from-yellow-100 to-yellow-400' },
+        { id: 'hero',     label: 'Hero dirt / tacky',     short: 'Hero dirt', icon: '🤘', badge: 'cond-badge cb-hero', bar: 'from-emerald-300 to-emerald-600' },
+        { id: 'greasy',   label: 'Damp / greasy',         short: 'Greasy',    icon: '💧', badge: 'cond-badge cb-greasy',        bar: 'from-teal-300 to-teal-600' },
+        { id: 'wet',      label: 'Wet',                   short: 'Wet',       icon: '🌧️', badge: 'cond-badge cb-wet',           bar: 'from-sky-500 to-sky-700' },
+        { id: 'muddy',    label: 'Muddy / peanut butter', short: 'Muddy',     icon: '🟤', badge: 'cond-badge cb-muddy',     bar: 'from-amber-600 to-amber-900' },
+        { id: 'snow',     label: 'Snow / frozen',         short: 'Snow',      icon: '❄️', badge: 'cond-badge cb-snow',  bar: 'from-gray-200 to-gray-400' }
       ];
       const COND = Object.fromEntries(CONDITIONS.map(c => [c.id, c]));
       const DEFAULT_COND = 'hero';
@@ -782,7 +848,7 @@
         const metric = (label, value, unit) => `
           <div class="rounded-xl bg-ink-850 border border-white/5 px-3 py-2.5">
             <p class="text-[10px] uppercase tracking-wider text-slate-500">${label}</p>
-            <p class="mt-0.5 text-lg font-bold text-white">${esc(fmt(value))}${value != null && unit ? `<span class="text-xs font-medium text-slate-500 ml-0.5">${unit}</span>` : ''}</p>
+            <p class="mt-0.5 text-2xl num text-white">${esc(fmt(value))}${value != null && unit ? `<span class="text-xs font-medium text-slate-500 ml-0.5">${unit}</span>` : ''}</p>
           </div>`;
         return `
           <article class="card-enter group relative overflow-hidden rounded-2xl bg-ink-900 border border-white/5 hover:border-white/10 transition shadow-lg shadow-black/20">
@@ -790,8 +856,8 @@
             <div class="p-5 pl-6">
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
-                  <h3 class="font-semibold text-white truncate">${esc(l.trailSystem)}</h3>
-                  <p class="text-xs text-slate-500 mt-0.5">${date} · ${time} · ${l.trails.length} trail${l.trails.length === 1 ? '' : 's'}${l.bikeName ? ` · ${esc(l.bikeName)}` : ''}${l.rating ? ` · <span class="text-amber-300">${'★'.repeat(l.rating)}</span><span class="text-slate-700">${'★'.repeat(5 - l.rating)}</span>` : ''}</p>
+                  <h3 class="text-xl font-bold text-white truncate">${esc(l.trailSystem)}</h3>
+                  <p class="text-xs text-slate-500 mt-0.5">${date} · ${time} · ${l.trails.length} trail${l.trails.length === 1 ? '' : 's'}${l.bikeName ? ` · ${esc(l.bikeName)}` : ''}${l.rating ? ` · <span class="text-pro-400">${'★'.repeat(l.rating)}</span><span class="text-slate-700">${'★'.repeat(5 - l.rating)}</span>` : ''}</p>
                 </div>
                 <button data-delete="${esc(l.id)}" class="h-7 w-7 shrink-0 grid place-items-center rounded-lg text-slate-600 hover:text-rose-400 hover:bg-rose-400/10 opacity-60 group-hover:opacity-100 transition" aria-label="Delete entry">
                   <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
@@ -968,8 +1034,8 @@
         const pending = outbox().length;
         let text, dot;
         if (!navigator.onLine || !sb) { text = pending ? `Offline · ${pending} waiting to sync` : 'Offline · saved on this phone'; dot = 'bg-slate-500'; }
-        else if (flushing) { text = 'Syncing…'; dot = 'bg-sky-400 animate-pulse'; }
-        else if (pending) { text = `${pending} waiting to sync`; dot = 'bg-amber-400'; }
+        else if (flushing) { text = 'Syncing…'; dot = 'bg-trail-400 animate-pulse'; }
+        else if (pending) { text = `${pending} waiting to sync`; dot = 'bg-pro-500'; }
         else { text = 'Synced'; dot = 'bg-trail-400'; }
         $('#syncText').textContent = text;
         $('#syncDot').className = `h-2 w-2 shrink-0 rounded-full ${dot}`;
@@ -1335,7 +1401,7 @@
       const tile = (label, value, sub = '') => `
         <div class="rounded-xl bg-ink-850 border border-white/5 px-4 py-3">
           <p class="text-[10px] uppercase tracking-wider text-slate-500">${label}</p>
-          <p class="mt-0.5 text-2xl font-bold text-white">${value}</p>
+          <p class="mt-0.5 text-3xl num text-white">${value}</p>
           ${sub ? `<p class="text-[11px] text-slate-500">${sub}</p>` : ''}
         </div>`;
 
@@ -1352,7 +1418,7 @@
             ${item('📈', 'Your best setup', 'Trends and the PSI that felt best for you in each condition.')}
             ${item('🧾', 'Export', 'CSV and PDF reports to share with your mechanic.')}
           </div>
-          <button type="button" data-unlock class="mt-4 w-full rounded-xl bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 py-3 text-sm font-bold text-white shadow-lg shadow-violet-900/40 hover:brightness-110 transition">Unlock with TrailSync Pro</button>`;
+          <button type="button" data-unlock class="mt-4 w-full rounded-lg bg-pro-500 hover:bg-pro-400 py-3 text-sm font-bold uppercase tracking-wide text-[#1a1408] transition">Unlock with TrailSync Pro</button>`;
       }
 
       function recommendHTML() {
@@ -1390,7 +1456,7 @@
           </div>
           <div class="mt-3 flex flex-wrap gap-1.5">${chips}</div>
 
-          <p class="mt-5 text-xs font-semibold uppercase tracking-wider text-violet-300">Tire pressure</p>
+          <p class="mt-5 text-xs font-bold uppercase tracking-wider text-trail-400">Tire pressure</p>
           <div class="mt-2 grid grid-cols-2 gap-3">
             ${tile('Front', `${rec.front}<span class="text-sm font-medium text-slate-500"> psi</span>`, 'expert starting point')}
             ${tile('Rear', `${rec.rear}<span class="text-sm font-medium text-slate-500"> psi</span>`, 'expert starting point')}
@@ -1404,14 +1470,14 @@
             </ul>
           </details>
 
-          <p class="mt-5 text-xs font-semibold uppercase tracking-wider text-violet-300">Suspension</p>
+          <p class="mt-5 text-xs font-bold uppercase tracking-wider text-trail-400">Suspension</p>
           <div class="mt-2 grid grid-cols-2 gap-3">
             ${tile('Fork sag', susp.sag.fork)}
             ${tile('Shock sag', susp.sag.shock)}
           </div>
           <p class="mt-3 text-xs text-slate-400">${esc(susp.shockStart)}</p>
           <ul class="mt-3 space-y-2 text-sm text-slate-300">
-            ${susp.tips.map(t => `<li class="flex gap-2"><span class="text-violet-300">›</span><span>${esc(t)}</span></li>`).join('')}
+            ${susp.tips.map(t => `<li class="flex gap-2"><span class="text-trail-400">›</span><span>${esc(t)}</span></li>`).join('')}
           </ul>
           <p class="mt-4 text-[11px] text-slate-600">Starting points, not rules. Stay within the pressure range printed on your tire and rim. Add 1 psi if you feel rim strikes or the tire folds in turns, and drop 1 psi if it skips over roots.</p>`;
       }
@@ -1427,26 +1493,26 @@
         const step = Math.max(1, Math.ceil((hi - lo) / 4));
         let grid = '';
         for (let v = lo; v <= hi; v += step) {
-          grid += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,.06)"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="#64748b">${v}</text>`;
+          grid += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" style="stroke:rgb(var(--fg) / .08)"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" style="fill:rgb(var(--s500))">${v}</text>`;
         }
         const day = (l) => new Date(l.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
         const series = (key, color, name) => {
           const p = pts.map((l, i) => l[key] == null ? null : [x(i), y(l[key]), l]).filter(Boolean);
-          return `<polyline fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" points="${p.map(q => `${q[0]},${q[1]}`).join(' ')}"/>`
-            + p.map(([cx, cy, l]) => `<circle cx="${cx}" cy="${cy}" r="${l.rating >= 4 ? 5 : 3.5}" fill="${l.rating >= 4 ? color : '#0a0d12'}" stroke="${color}" stroke-width="2"><title>${esc(day(l))} · ${esc(l.trailSystem)} · ${name} ${l[key]} psi${l.rating ? ` · rated ${l.rating}/5` : ''}</title></circle>`).join('');
+          return `<polyline fill="none" style="stroke:${color}" stroke-width="2" stroke-linejoin="round" points="${p.map(q => `${q[0]},${q[1]}`).join(' ')}"/>`
+            + p.map(([cx, cy, l]) => `<circle cx="${cx}" cy="${cy}" r="${l.rating >= 4 ? 5 : 3.5}" style="fill:${l.rating >= 4 ? color : 'rgb(var(--card))'};stroke:${color}" stroke-width="2"><title>${esc(day(l))} · ${esc(l.trailSystem)} · ${name} ${l[key]} psi${l.rating ? ` · rated ${l.rating}/5` : ''}</title></circle>`).join('');
         };
         return `
           <div class="rounded-xl bg-ink-850 border border-white/5 p-3">
             <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" role="img" aria-label="Tire pressure over your last ${pts.length} rides">
               ${grid}
-              ${series('rearPsi', '#4ade80', 'Rear')}
-              ${series('frontPsi', '#38bdf8', 'Front')}
-              <text x="${L}" y="${H - 6}" font-size="11" fill="#64748b">${esc(day(pts[0]))}</text>
-              <text x="${W - R}" y="${H - 6}" font-size="11" fill="#64748b" text-anchor="end">${esc(day(pts[pts.length - 1]))}</text>
+              ${series('rearPsi', 'var(--chart-rear)', 'Rear')}
+              ${series('frontPsi', 'var(--chart-front)', 'Front')}
+              <text x="${L}" y="${H - 6}" font-size="11" style="fill:rgb(var(--s500))">${esc(day(pts[0]))}</text>
+              <text x="${W - R}" y="${H - 6}" font-size="11" style="fill:rgb(var(--s500))" text-anchor="end">${esc(day(pts[pts.length - 1]))}</text>
             </svg>
             <p class="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-400">
-              <span><span class="inline-block h-2 w-2 rounded-full bg-sky-400"></span> Front</span>
-              <span><span class="inline-block h-2 w-2 rounded-full bg-trail-400"></span> Rear</span>
+              <span><span class="inline-block h-2 w-2 rounded-full" style="background:var(--chart-front)"></span> Front</span>
+              <span><span class="inline-block h-2 w-2 rounded-full" style="background:var(--chart-rear)"></span> Rear</span>
               <span>Filled dots = rides you rated Good or Dialed</span>
             </p>
           </div>`;
@@ -1477,7 +1543,7 @@
             <option value="all">All bikes</option>${names.map(n => `<option value="${esc(n)}" ${n === trendBike ? 'selected' : ''}>${esc(n)}</option>`).join('')}
           </select>` : ''}
           ${psiChart(rides)}
-          <p class="mt-5 text-xs font-semibold uppercase tracking-wider text-violet-300">By condition</p>
+          <p class="mt-5 text-xs font-bold uppercase tracking-wider text-trail-400">By condition</p>
           ${rows ? `<div class="mt-2 overflow-x-auto"><table class="w-full text-left text-xs text-slate-300">
             <thead class="text-[10px] uppercase tracking-wider text-slate-500"><tr><th class="pb-2 pr-3 font-medium">Condition</th><th class="pb-2 pr-3 font-medium">Rides</th><th class="pb-2 pr-3 font-medium">Avg F / R</th><th class="pb-2 pr-3 font-medium">Feel</th><th class="pb-2 font-medium">Best setup</th></tr></thead>
             <tbody>${rows}</tbody></table></div>` : '<p class="mt-2 text-sm text-slate-400">No rides yet.</p>'}`;
@@ -1658,7 +1724,7 @@
       function checkoutMessage(text, kind = 'error') {
         const msg = $('#checkoutMsg');
         msg.textContent = text;
-        msg.className = `mt-3 text-center text-xs ${kind === 'error' ? 'text-amber-300' : 'text-slate-500'}`;
+        msg.className = `mt-3 text-center text-xs ${kind === 'error' ? 'text-rose-500' : 'text-slate-500'}`;
       }
 
       $('#checkoutBtn').addEventListener('click', async () => {
