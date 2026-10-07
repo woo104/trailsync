@@ -16,6 +16,8 @@ This creates two tables:
 
 Row Level Security is switched on, so a logged-in rider can only read or change their own rows. It's safe to run the script again later.
 
+Then run `schema-stripe.sql` (who has paid) and `schema-pro.sql` (multiple bikes and ride ratings) the same way. Both are safe to run again.
+
 ## 3. Add your keys to the app
 1. Open **Project Settings → API** (in newer dashboards: **Project Settings → API Keys** and **Data API**).
 2. Copy the **Project URL** and the **anon / public** key.

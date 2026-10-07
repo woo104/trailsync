@@ -107,6 +107,10 @@
             </h2>
             <span id="profileSaved" class="text-xs text-trail-400 opacity-0 transition-opacity">Saved ✓</span>
           </div>
+          <div class="mb-4 flex items-center gap-2">
+            <select id="bikeSelect" aria-label="Bike" class="flex-1 min-w-0 rounded-lg bg-ink-850 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-trail-500/60"></select>
+            <button type="button" id="addBikeBtn" class="shrink-0 rounded-lg border border-white/10 bg-ink-850 hover:bg-ink-700 px-3 py-2 text-sm font-medium text-slate-300 hover:text-white transition">+ Bike <span data-pro-badge class="text-[10px] font-bold text-violet-300">PRO</span></button>
+          </div>
           <form id="profileForm" class="space-y-4" autocomplete="off">
             <label class="block">
               <span class="text-xs font-medium text-slate-400">Bike Name</span>
@@ -122,11 +126,64 @@
                 <input name="shockModel" type="text" placeholder="RockShox Super Deluxe" class="mt-1.5 w-full rounded-lg bg-ink-850 border border-white/10 px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-trail-500/60 focus:border-transparent" />
               </label>
             </div>
-            <label class="block">
-              <span class="text-xs font-medium text-slate-400">Rider Weight (lbs, kitted)</span>
-              <input name="riderWeight" type="number" min="0" step="1" placeholder="175" class="mt-1.5 w-full rounded-lg bg-ink-850 border border-white/10 px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-trail-500/60 focus:border-transparent" />
-            </label>
-            <button type="submit" class="w-full rounded-lg bg-ink-800 hover:bg-ink-700 border border-white/10 py-2.5 text-sm font-semibold text-white transition">Save Profile</button>
+            <div class="grid grid-cols-2 gap-3">
+              <label class="block">
+                <span class="text-xs font-medium text-slate-400">Riding Style</span>
+                <select name="type" class="mt-1.5 w-full rounded-lg bg-ink-850 border border-white/10 px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-trail-500/60">
+                  <option value="xc">XC / downcountry</option>
+                  <option value="trail">Trail</option>
+                  <option value="enduro">Enduro</option>
+                  <option value="dh">Downhill / park</option>
+                </select>
+              </label>
+              <label class="block">
+                <span class="text-xs font-medium text-slate-400">Rider Weight (lbs, kitted)</span>
+                <input name="riderWeight" type="number" min="0" step="1" placeholder="175" class="mt-1.5 w-full rounded-lg bg-ink-850 border border-white/10 px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-trail-500/60 focus:border-transparent" />
+              </label>
+            </div>
+            <details class="group rounded-xl border border-white/10 bg-ink-850/60 px-3 py-2.5">
+              <summary class="cursor-pointer list-none flex items-center justify-between text-xs font-medium text-slate-400">
+                <span>Tire setup <span class="text-slate-600">(used for PSI recommendations)</span></span>
+                <span class="text-slate-600 group-open:rotate-180 transition">⌄</span>
+              </summary>
+              <div class="mt-3 grid grid-cols-2 gap-3">
+                <label class="block">
+                  <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">Tire Width</span>
+                  <select name="tireWidth" class="mt-1 w-full rounded-lg bg-ink-850 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-trail-500/60">
+                    <option value="2.2">2.2"</option><option value="2.25">2.25"</option><option value="2.3">2.3"</option><option value="2.35">2.35"</option>
+                    <option value="2.4">2.4"</option><option value="2.5">2.5"</option><option value="2.6">2.6"</option><option value="2.8">2.8"</option>
+                  </select>
+                </label>
+                <label class="block">
+                  <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">Casing</span>
+                  <select name="casing" class="mt-1 w-full rounded-lg bg-ink-850 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-trail-500/60">
+                    <option value="light">Light / XC</option>
+                    <option value="trail">Trail (e.g. EXO)</option>
+                    <option value="enduro">Enduro (e.g. EXO+, DD)</option>
+                    <option value="dh">Downhill</option>
+                  </select>
+                </label>
+                <label class="block">
+                  <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">Setup</span>
+                  <select name="tubeless" class="mt-1 w-full rounded-lg bg-ink-850 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-trail-500/60">
+                    <option value="yes">Tubeless</option>
+                    <option value="no">Tubes</option>
+                  </select>
+                </label>
+                <label class="block">
+                  <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">Inserts</span>
+                  <select name="inserts" class="mt-1 w-full rounded-lg bg-ink-850 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-trail-500/60">
+                    <option value="none">None</option>
+                    <option value="rear">Rear only</option>
+                    <option value="both">Front &amp; rear</option>
+                  </select>
+                </label>
+              </div>
+            </details>
+            <div class="flex gap-2">
+              <button type="submit" class="flex-1 rounded-lg bg-ink-800 hover:bg-ink-700 border border-white/10 py-2.5 text-sm font-semibold text-white transition">Save Profile</button>
+              <button type="button" id="deleteBikeBtn" class="hidden shrink-0 rounded-lg border border-white/10 px-3 py-2.5 text-sm text-slate-400 hover:text-rose-400 hover:bg-rose-400/10 transition">Remove bike</button>
+            </div>
           </form>
         </section>
 
@@ -136,6 +193,10 @@
             <span class="h-2 w-2 rounded-full bg-amber-400"></span> Log Entry
           </h2>
           <form id="logForm" class="space-y-4" autocomplete="off">
+            <label id="logBikeField" class="hidden block">
+              <span class="text-xs font-medium text-slate-400">Bike</span>
+              <select name="bikeId" class="mt-1.5 w-full rounded-lg bg-ink-850 border border-white/10 px-3 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-trail-500/60"></select>
+            </label>
             <label class="block">
               <span class="text-xs font-medium text-slate-400">Bike Park / Trail System <span class="text-rose-400">*</span></span>
               <input name="trailSystem" type="text" required list="systemList" placeholder="e.g. Whistler Bike Park" class="mt-1.5 w-full rounded-lg bg-ink-850 border border-white/10 px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-trail-500/60 focus:border-transparent" />
@@ -152,6 +213,10 @@
               <button type="button" id="addTrailBtn" class="mt-3 w-full rounded-lg border border-dashed border-white/15 hover:border-trail-500/60 hover:bg-trail-500/5 py-2 text-sm font-medium text-slate-300 hover:text-trail-400 transition">+ Add another trail</button>
             </div>
 
+            <button type="button" id="suggestPsiBtn" class="w-full inline-flex items-center justify-center gap-2 rounded-lg border border-violet-400/30 bg-violet-500/10 hover:bg-violet-500/20 py-2 text-sm font-semibold text-violet-200 transition">
+              ✨ Suggest PSI for these trails <span data-pro-badge class="text-[10px] font-bold text-violet-300">PRO</span>
+            </button>
+            <p id="suggestNote" class="hidden -mt-2 text-xs text-violet-200/80"></p>
             <div class="grid grid-cols-2 gap-3">
               <label class="block">
                 <span class="text-xs font-medium text-slate-400">Front PSI</span>
@@ -176,6 +241,17 @@
               <textarea name="notes" rows="3" placeholder="Fork felt harsh on the rock garden, try 2 clicks slower rebound..." class="mt-1.5 w-full rounded-lg bg-ink-850 border border-white/10 px-3 py-2.5 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-trail-500/60 focus:border-transparent resize-y"></textarea>
             </label>
 
+            <div>
+              <span class="text-xs font-medium text-slate-400">How did the setup feel? <span class="text-slate-600">(powers your best-setup insights)</span></span>
+              <div id="ratingGroup" class="mt-1.5 grid grid-cols-5 gap-1.5">
+                <button type="button" data-rating="1" class="rounded-lg border border-white/10 bg-ink-850 py-2 text-xs text-slate-400 transition">1<br><span class="text-[10px]">Way off</span></button>
+                <button type="button" data-rating="2" class="rounded-lg border border-white/10 bg-ink-850 py-2 text-xs text-slate-400 transition">2<br><span class="text-[10px]">Meh</span></button>
+                <button type="button" data-rating="3" class="rounded-lg border border-white/10 bg-ink-850 py-2 text-xs text-slate-400 transition">3<br><span class="text-[10px]">OK</span></button>
+                <button type="button" data-rating="4" class="rounded-lg border border-white/10 bg-ink-850 py-2 text-xs text-slate-400 transition">4<br><span class="text-[10px]">Good</span></button>
+                <button type="button" data-rating="5" class="rounded-lg border border-white/10 bg-ink-850 py-2 text-xs text-slate-400 transition">5<br><span class="text-[10px]">Dialed</span></button>
+              </div>
+            </div>
+
             <button type="submit" class="w-full rounded-lg bg-trail-500 hover:bg-trail-400 py-2.5 text-sm font-bold text-ink-950 shadow-lg shadow-emerald-900/30 transition">+ Save Ride Log</button>
           </form>
         </section>
@@ -183,6 +259,21 @@
 
       <!-- Right column: History -->
       <section class="lg:col-span-3">
+        <!-- Pro Insights -->
+        <div id="insights" class="mb-8 rounded-2xl bg-ink-900 border border-violet-400/20 shadow-xl shadow-black/20 overflow-hidden">
+          <div class="flex flex-wrap items-center justify-between gap-3 px-5 pt-5">
+            <h2 class="text-base font-semibold text-white flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-violet-400"></span> Pro Insights
+            </h2>
+            <div id="insightTabs" class="flex rounded-lg bg-ink-850 p-1 text-xs font-semibold">
+              <button type="button" data-tab="recommend" class="rounded-md px-3 py-1.5 transition">Setup</button>
+              <button type="button" data-tab="trends" class="rounded-md px-3 py-1.5 transition">Trends</button>
+              <button type="button" data-tab="export" class="rounded-md px-3 py-1.5 transition">Export</button>
+            </div>
+          </div>
+          <div id="insightBody" class="p-5"></div>
+        </div>
+
         <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
           <h2 class="text-base font-semibold text-white flex items-center gap-2">
             <span class="h-2 w-2 rounded-full bg-sky-400"></span> Ride History
@@ -270,9 +361,9 @@
           <p id="premiumDesc" class="mt-2 text-sm text-slate-400">Turn your ride logs into a perfectly dialed setup for every trail and condition.</p>
 
           <ul class="mt-6 space-y-3 text-sm">
-            <li class="flex gap-3"><span class="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-trail-500/20 text-trail-400 text-xs">✓</span><span><b class="text-white">Smart PSI recommendations</b> <span class="text-slate-400">based on rider weight, trail condition and surface</span></span></li>
-            <li class="flex gap-3"><span class="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-trail-500/20 text-trail-400 text-xs">✓</span><span><b class="text-white">Setup trend charts</b> <span class="text-slate-400">to see what works on hero dirt vs. greasy days</span></span></li>
-            <li class="flex gap-3"><span class="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-trail-500/20 text-trail-400 text-xs">✓</span><span><b class="text-white">Unlimited bikes &amp; cloud sync</b> <span class="text-slate-400">across phone and desktop</span></span></li>
+            <li class="flex gap-3"><span class="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-trail-500/20 text-trail-400 text-xs">✓</span><span><b class="text-white">Smart PSI &amp; suspension recommendations</b> <span class="text-slate-400">from rider weight, tire setup, trail condition and surface</span></span></li>
+            <li class="flex gap-3"><span class="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-trail-500/20 text-trail-400 text-xs">✓</span><span><b class="text-white">Setup trends &amp; your best setup per condition</b> <span class="text-slate-400">to see what works on hero dirt vs. greasy days</span></span></li>
+            <li class="flex gap-3"><span class="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-trail-500/20 text-trail-400 text-xs">✓</span><span><b class="text-white">Unlimited bikes</b> <span class="text-slate-400">each with its own tire setup and history</span></span></li>
             <li class="flex gap-3"><span class="mt-0.5 h-5 w-5 shrink-0 grid place-items-center rounded-full bg-trail-500/20 text-trail-400 text-xs">✓</span><span><b class="text-white">Export to PDF / CSV</b> <span class="text-slate-400">to share with your mechanic</span></span></li>
           </ul>
 
@@ -353,7 +444,7 @@
       let user = null;   // { id, email } when signed in (cloud mode)
       let isPro = false;       // active subscription or lifetime purchase, written by the webhook
       let proStatus = null;    // 'active', 'lifetime', ...
-      let profile = {};
+      let profile = { riderWeight: '', bikes: [{ id: 'bike-1' }] };
       let logs = [];
 
       // ---------- Helpers ----------
@@ -412,30 +503,95 @@
         toastTimer = setTimeout(() => el.classList.add('opacity-0', 'translate-y-2'), 2200);
       }
 
-      // ---------- Bike Profile ----------
+      // ---------- Bike Profile (garage) ----------
+      // profile = { riderWeight, bikes: [...], activeBikeId }. One bike is free; more bikes are Pro.
+      const BIKE_DEFAULTS = { name: '', fork: '', shock: '', type: 'trail', tireWidth: '2.4', casing: 'trail', tubeless: 'yes', inserts: 'none' };
+      const BIKE_FIELDS = ['type', 'tireWidth', 'casing', 'tubeless', 'inserts'];
+
+      // Also upgrades the single-bike profile saved before the garage existed.
+      function normalizeProfile(p) {
+        p = p || {};
+        const saved = Array.isArray(p.bikes) && p.bikes.length ? p.bikes
+          : [{ id: 'bike-1', name: p.bikeName || '', fork: p.forkModel || '', shock: p.shockModel || '' }];
+        const bikes = saved.map(b => ({ ...BIKE_DEFAULTS, ...b }));
+        const activeBikeId = bikes.some(b => b.id === p.activeBikeId) ? p.activeBikeId : bikes[0].id;
+        return { riderWeight: p.riderWeight ?? '', bikes, activeBikeId };
+      }
+      const activeBike = () => profile.bikes.find(b => b.id === profile.activeBikeId) || profile.bikes[0];
+      const bikeById = (id) => profile.bikes.find(b => b.id === id) || activeBike();
+
       const profileForm = $('#profileForm');
       function loadProfile() {
-        ['bikeName', 'forkModel', 'shockModel', 'riderWeight'].forEach(k => {
-          profileForm.elements[k].value = profile[k] ?? '';
-        });
+        const b = activeBike();
+        const f = profileForm.elements;
+        f.bikeName.value = b.name;
+        f.forkModel.value = b.fork;
+        f.shockModel.value = b.shock;
+        f.riderWeight.value = profile.riderWeight ?? '';
+        BIKE_FIELDS.forEach(k => { f[k].value = b[k]; });
+        renderBikeSelects();
       }
+
+      function renderBikeSelects() {
+        const opts = profile.bikes.map(b => `<option value="${esc(b.id)}">${esc(b.name || 'Unnamed bike')}</option>`).join('');
+        const logSelect = logForm.elements.bikeId;
+        const keep = logSelect.value;
+        $('#bikeSelect').innerHTML = opts;
+        $('#bikeSelect').value = profile.activeBikeId;
+        logSelect.innerHTML = opts;
+        logSelect.value = profile.bikes.some(b => b.id === keep) ? keep : profile.activeBikeId;
+        $('#logBikeField').classList.toggle('hidden', profile.bikes.length < 2);
+        $('#deleteBikeBtn').classList.toggle('hidden', profile.bikes.length < 2);
+      }
+
+      function saveProfile(message) {
+        if (!persist()) return;
+        enqueue({ op: 'saveProfile', row: toProfileRow(profile) });
+        if (message) toast(message);
+        loadProfile();
+        renderInsights();
+      }
+
       profileForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const f = profileForm.elements;
-        profile = {
-          bikeName: f.bikeName.value.trim(),
-          forkModel: f.forkModel.value.trim(),
-          shockModel: f.shockModel.value.trim(),
-          riderWeight: f.riderWeight.value
-        };
-        if (persist()) {
-          enqueue({ op: 'saveProfile', row: toProfileRow(profile) });
-          const s = $('#profileSaved');
-          s.classList.remove('opacity-0');
-          setTimeout(() => s.classList.add('opacity-0'), 1800);
-          toast('Bike profile saved');
-          renderHistory();
-        }
+        const b = activeBike();
+        Object.assign(b, {
+          name: f.bikeName.value.trim(),
+          fork: f.forkModel.value.trim(),
+          shock: f.shockModel.value.trim(),
+          ...Object.fromEntries(BIKE_FIELDS.map(k => [k, f[k].value]))
+        });
+        profile.riderWeight = f.riderWeight.value;
+        saveProfile('Bike profile saved');
+        const s = $('#profileSaved');
+        s.classList.remove('opacity-0');
+        setTimeout(() => s.classList.add('opacity-0'), 1800);
+        renderHistory();
+      });
+
+      $('#bikeSelect').addEventListener('change', (e) => {
+        profile.activeBikeId = e.target.value;
+        logForm.elements.bikeId.value = e.target.value;
+        saveProfile();
+      });
+
+      $('#addBikeBtn').addEventListener('click', () => {
+        if (!isPro) { toast('More than one bike is a Pro feature'); openModal(); return; }
+        const bike = { ...BIKE_DEFAULTS, id: uid(), name: `Bike ${profile.bikes.length + 1}` };
+        profile.bikes.push(bike);
+        profile.activeBikeId = bike.id;
+        logForm.elements.bikeId.value = bike.id;
+        saveProfile('Bike added. Give it a name and save.');
+        profileForm.elements.bikeName.select();
+      });
+
+      $('#deleteBikeBtn').addEventListener('click', () => {
+        const b = activeBike();
+        if (profile.bikes.length < 2 || !confirm(`Remove ${b.name || 'this bike'}? Its past rides stay in your history.`)) return;
+        profile.bikes = profile.bikes.filter(x => x.id !== b.id);
+        profile.activeBikeId = profile.bikes[0].id;
+        saveProfile('Bike removed');
       });
 
       // ---------- Log Entry: trail system + trails ----------
@@ -487,13 +643,33 @@
         $('#trailCount').textContent = rows.length > 1 ? `${rows.length} trails` : '';
       }
 
-      function readTrails() {
+      function readTrailRows() {
         return [...trailRows.querySelectorAll('.trail-row')].map(r => ({
           name: r.querySelector('[data-field=name]').value.trim(),
           condition: r.querySelector('[data-field=condition]').value,
           surfaces: [...r.querySelectorAll('[data-surface]:checked')].map(b => b.value)
-        })).filter(t => t.name);
+        }));
       }
+      const readTrails = () => readTrailRows().filter(t => t.name);
+
+      // Setup feel, 1-5. Tap the selected one again to clear it.
+      let rating = null;
+      function setRating(value) {
+        rating = value;
+        document.querySelectorAll('#ratingGroup [data-rating]').forEach(b => {
+          const on = Number(b.dataset.rating) === rating;
+          b.classList.toggle('border-trail-400', on);
+          b.classList.toggle('bg-trail-500/10', on);
+          b.classList.toggle('text-trail-400', on);
+          b.classList.toggle('text-slate-400', !on);
+        });
+      }
+      $('#ratingGroup').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-rating]');
+        if (!b) return;
+        const v = Number(b.dataset.rating);
+        setRating(rating === v ? null : v);
+      });
 
       $('#addTrailBtn').addEventListener('click', () => {
         // New trail starts with the previous trail's condition: conditions usually match within a park
@@ -530,6 +706,7 @@
           trailRows.querySelector('[data-field=name]').focus();
           return;
         }
+        const bike = bikeById(f.bikeId.value);
         const entry = {
           id: uid(),
           createdAt: new Date().toISOString(),
@@ -540,12 +717,16 @@
           frontClickers: num(f.frontClickers.value),
           rearClickers: num(f.rearClickers.value),
           notes: f.notes.value.trim(),
-          bikeName: profile.bikeName || ''
+          bikeName: bike.name || '',
+          rating
         };
         logs.unshift(entry);
         if (persist()) {
           enqueue({ op: 'upsertRide', row: toRideRow(entry) });
           logForm.reset();
+          f.bikeId.value = bike.id;
+          setRating(null);
+          $('#suggestNote').classList.add('hidden');
           trailRows.innerHTML = '';
           addTrailRow();
           toast(`Logged ${trails.length} trail${trails.length > 1 ? 's' : ''} at ${trailSystem}`);
@@ -607,7 +788,7 @@
               <div class="flex items-start justify-between gap-3">
                 <div class="min-w-0">
                   <h3 class="font-semibold text-white truncate">${esc(l.trailSystem)}</h3>
-                  <p class="text-xs text-slate-500 mt-0.5">${date} · ${time} · ${l.trails.length} trail${l.trails.length === 1 ? '' : 's'}${l.bikeName ? ` · ${esc(l.bikeName)}` : ''}</p>
+                  <p class="text-xs text-slate-500 mt-0.5">${date} · ${time} · ${l.trails.length} trail${l.trails.length === 1 ? '' : 's'}${l.bikeName ? ` · ${esc(l.bikeName)}` : ''}${l.rating ? ` · <span class="text-amber-300">${'★'.repeat(l.rating)}</span><span class="text-slate-700">${'★'.repeat(5 - l.rating)}</span>` : ''}</p>
                 </div>
                 <button data-delete="${esc(l.id)}" class="h-7 w-7 shrink-0 grid place-items-center rounded-lg text-slate-600 hover:text-rose-400 hover:bg-rose-400/10 opacity-60 group-hover:opacity-100 transition" aria-label="Delete entry">
                   <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
@@ -637,7 +818,7 @@
           (!list.length && logs.length) ? `No ${COND[filter].short.toLowerCase()} rides yet` : 'No rides logged yet';
       }
 
-      function render() { renderStats(); renderHistory(); refreshSuggestions(); }
+      function render() { renderStats(); renderHistory(); refreshSuggestions(); renderInsights(); }
 
       $('#filterCond').addEventListener('change', renderHistory);
       $('#historyFeed').addEventListener('click', (e) => {
@@ -663,7 +844,8 @@
         front_clickers: l.frontClickers,
         rear_clickers: l.rearClickers,
         notes: l.notes || null,
-        bike_name: l.bikeName || null
+        bike_name: l.bikeName || null,
+        rating: l.rating ?? null
       });
       const fromRideRow = (r) => ({
         id: r.id,
@@ -675,21 +857,28 @@
         frontClickers: r.front_clickers,
         rearClickers: r.rear_clickers,
         notes: r.notes || '',
-        bikeName: r.bike_name || ''
-      });
-      const toProfileRow = (p) => ({
-        user_id: user?.id,
-        bike_name: p.bikeName || null,
-        fork_model: p.forkModel || null,
-        shock_model: p.shockModel || null,
-        rider_weight: num(p.riderWeight),
-        updated_at: new Date().toISOString()
-      });
-      const fromProfileRow = (r) => ({
         bikeName: r.bike_name || '',
-        forkModel: r.fork_model || '',
-        shockModel: r.shock_model || '',
-        riderWeight: r.rider_weight ?? ''
+        rating: r.rating ?? null
+      });
+      // The original columns mirror the selected bike; the whole garage lives in `garage` (schema-pro.sql).
+      const toProfileRow = (p) => {
+        const b = p.bikes.find(x => x.id === p.activeBikeId) || p.bikes[0];
+        return {
+          user_id: user?.id,
+          bike_name: b.name || null,
+          fork_model: b.fork || null,
+          shock_model: b.shock || null,
+          rider_weight: num(p.riderWeight),
+          garage: { bikes: p.bikes, activeBikeId: p.activeBikeId },
+          updated_at: new Date().toISOString()
+        };
+      };
+      const fromProfileRow = (r) => normalizeProfile({
+        bikeName: r.bike_name,
+        forkModel: r.fork_model,
+        shockModel: r.shock_model,
+        riderWeight: r.rider_weight ?? '',
+        ...(r.garage || {})
       });
 
       const outbox = () => user ? store.get(KEYS.outbox(user.id), []) : [];
@@ -721,6 +910,13 @@
               else res = { error: null };
             } catch (e) {
               res = { error: e, status: 0 };
+            }
+            // schema-pro.sql not run yet: save everything except the new columns.
+            if (res.error?.code === 'PGRST204' && (item.op === 'upsertRide' || item.op === 'saveProfile')) {
+              const { rating: _r, garage: _g, ...row } = item.row;
+              res = item.op === 'upsertRide'
+                ? await sb.from('rides').upsert(row)
+                : await sb.from('profiles').upsert({ ...row, user_id: user.id });
             }
             if (res.error && isRetryable(res)) break;
             if (res.error) {
@@ -757,7 +953,7 @@
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
         const pendingProfile = box.filter(i => i.op === 'saveProfile').pop();
-        profile = pendingProfile ? fromProfileRow(pendingProfile.row) : (p.data ? fromProfileRow(p.data) : {});
+        profile = pendingProfile ? fromProfileRow(pendingProfile.row) : (p.data ? fromProfileRow(p.data) : normalizeProfile({}));
 
         persist();
         loadProfile();
@@ -783,7 +979,7 @@
         store.set(KEYS.lastUser, user);
         if (!same) {
           const cached = store.get(KEYS.cache(user.id), { profile: {}, logs: [] });
-          profile = cached.profile || {};
+          profile = normalizeProfile(cached.profile);
           logs = (cached.logs || []).map(migrate);
           isPro = Boolean(cached.isPro);
           proStatus = cached.proStatus ?? null;
@@ -799,7 +995,7 @@
 
       function endSession() {
         user = null;
-        profile = {};
+        profile = normalizeProfile({});
         logs = [];
         isPro = false;
         proStatus = null;
@@ -821,12 +1017,13 @@
         if (!confirm(`Upload ${n} ride${n === 1 ? '' : 's'} saved on this device to ${user.email}?`)) return;
         const items = localLogs.map(l => ({ ...l, id: uid(), createdAt: l.createdAt || new Date().toISOString() }));
         logs = [...items, ...logs].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        if (localProfile && !profile.bikeName) profile = localProfile;
+        const importProfile = localProfile && !activeBike().name;
+        if (importProfile) profile = normalizeProfile(localProfile);
         persist();
         setOutbox([
           ...outbox(),
           ...items.map(l => ({ op: 'upsertRide', row: toRideRow(l), key: uid() })),
-          ...(localProfile && profile === localProfile ? [{ op: 'saveProfile', row: toProfileRow(profile), key: uid() }] : [])
+          ...(importProfile ? [{ op: 'saveProfile', row: toProfileRow(profile), key: uid() }] : [])
         ]);
         loadProfile();
         render();
@@ -976,7 +1173,7 @@
         if (!CLOUD) {
           // Local mode: no accounts, everything stays in this browser.
           $('#localBar').classList.remove('hidden');
-          profile = store.get(KEYS.profile, {});
+          profile = normalizeProfile(store.get(KEYS.profile, {}));
           logs = store.get(KEYS.logs, []).map(migrate);
           loadProfile();
           render();
@@ -1016,6 +1213,403 @@
         });
       }
 
+      // ---------- Pro: setup recommendations ----------
+      // Starting points from published guides (evo, bike-size.com, Stan's via Singletracks, Flow, Blister):
+      // a 165 lb rider on 2.4" tubeless trail tires starts around 20 front / 23 rear, about +1 psi per 12 lb,
+      // rear 2-3 psi above front, tubes about 4 psi higher, inserts about 2 psi lower, and conditions move
+      // pressure 1-3 psi (lower for wet, loose or rooty grip, higher for rocks and rim protection).
+      const PSI_BASE = { weight: 165, front: 20, rear: 23 };
+      const TYPE_PSI = { xc: [1.5, 'XC: firmer for rolling speed'], trail: [0, ''], enduro: [0, ''], dh: [1, 'Downhill speed and big hits'] };
+      const CASING_PSI = { light: [1, 'Light casing needs more air to stop squirm'], trail: [0, ''], enduro: [-1, 'Tougher casing supports lower pressure'], dh: [-1.5, 'DH casing supports lower pressure'] };
+      const COND_PSI = { moondust: -1, dusty: -0.5, hardpack: 0.5, hero: 0, greasy: -1, wet: -1, muddy: -1, snow: -2 };
+      const SURF_PSI = { rocky: [0.5, 1], rooty: [-0.5, -0.5], loamy: [-0.5, -0.5], marbles: [-1, -1], bumps: [0, 0], blown: [0, 0.5], leaves: [-0.5, -0.5] };
+      const SURF_WHY = { rocky: 'protects rims from pinch flats', rooty: 'lets the tire conform to roots', loamy: 'more bite in soft dirt', marbles: 'more grip on loose-over-hard', blown: 'extra rear support in holes', leaves: 'more grip under leaves' };
+      const SAG = {
+        xc:     { fork: '15–20%', shock: '25–28%' },
+        trail:  { fork: '18–22%', shock: '28–30%' },
+        enduro: { fork: '20–25%', shock: '30–33%' },
+        dh:     { fork: '25–30%', shock: '30–35%' }
+      };
+      const TERRAIN_CAP = [-3, 2];
+      const half = (v) => Math.round(v * 2) / 2;
+      const signed = (v) => half(v) === 0 ? '0' : `${v > 0 ? '+' : '−'}${Math.abs(half(v))}`;
+      const avgOf = (vals) => vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+
+      function recommendPsi(bike, weight, trails) {
+        const w = num(weight) || PSI_BASE.weight;
+        let front = PSI_BASE.front, rear = PSI_BASE.rear;
+        const steps = [];
+        const add = (label, df, dr = df) => {
+          if (!df && !dr) return;
+          front += df; rear += dr;
+          steps.push({ label, df, dr });
+        };
+        const wAdj = (w - PSI_BASE.weight) / 12;
+        add(`Rider weight ${w} lb${num(weight) ? '' : ' (add yours in Bike Profile)'}`, wAdj, wAdj + (w > 185 ? 1 : 0));
+        add(TYPE_PSI[bike.type]?.[1], TYPE_PSI[bike.type]?.[0] || 0);
+        add(CASING_PSI[bike.casing]?.[1], CASING_PSI[bike.casing]?.[0] || 0);
+        const width = Number(bike.tireWidth) || 2.4;
+        add(`${width}" tires: ${width > 2.4 ? 'more air volume' : 'less air volume'}`, (2.4 - width) * 7.5);
+        if (bike.tubeless === 'no') add('Tubes: extra air to avoid pinch flats', 4);
+        if (bike.inserts === 'rear') add('Rear insert', 0, -2);
+        if (bike.inserts === 'both') add('Inserts front and rear', -2);
+
+        // Terrain: average the conditions across the trails, add each surface once, then cap the total.
+        let tf = 0, tr = 0;
+        const conds = [...new Set(trails.map(t => t.condition).filter(c => c in COND_PSI))];
+        if (conds.length) {
+          const c = avgOf(trails.map(t => COND_PSI[t.condition] ?? 0));
+          const label = conds.map(id => COND[id].short).join(', ');
+          if (c) { add(`Conditions: ${label}`, c); tf += c; tr += c; }
+        }
+        [...new Set(trails.flatMap(t => t.surfaces || []))].forEach(id => {
+          const [df, dr] = SURF_PSI[id] || [0, 0];
+          if (!df && !dr) return;
+          add(`${SURF[id].label}: ${SURF_WHY[id]}`, df, dr);
+          tf += df; tr += dr;
+        });
+        const capF = Math.min(Math.max(tf, TERRAIN_CAP[0]), TERRAIN_CAP[1]) - tf;
+        const capR = Math.min(Math.max(tr, TERRAIN_CAP[0]), TERRAIN_CAP[1]) - tr;
+        add('Trail adjustments capped at −3 / +2 psi', capF, capR);
+
+        // Floors: never suggest a front under 14 psi, and keep the rear at least 2 psi above the front.
+        const floorF = Math.max(half(front), 14);
+        const floorR = Math.max(half(rear), floorF + 2);
+        if (floorF !== half(front) || floorR !== half(rear)) {
+          steps.push({ label: floorR !== half(rear) ? 'Rear kept 2 psi above front' : 'Front kept at 14 psi minimum', df: floorF - half(front), dr: floorR - half(rear) });
+        }
+        return { front: floorF, rear: floorR, steps };
+      }
+
+      // Rider's own data: rides rated 4-5 on this bike in any of these conditions.
+      function provenSetup(bikeName, condIds) {
+        const rides = logs.filter(l => l.rating >= 4 && l.frontPsi != null && l.rearPsi != null
+          && (!bikeName || l.bikeName === bikeName)
+          && l.trails.some(t => condIds.includes(t.condition)));
+        if (rides.length < 2) return { count: rides.length };
+        const clicks = (k) => { const v = avgOf(rides.map(l => l[k]).filter(x => x != null)); return v == null ? null : Math.round(v); };
+        return {
+          count: rides.length,
+          front: half(avgOf(rides.map(l => l.frontPsi))),
+          rear: half(avgOf(rides.map(l => l.rearPsi))),
+          frontClickers: clicks('frontClickers'),
+          rearClickers: clicks('rearClickers')
+        };
+      }
+
+      function suspensionAdvice(bike, weight, trails) {
+        const conds = new Set(trails.map(t => t.condition));
+        const surfs = new Set(trails.flatMap(t => t.surfaces || []));
+        const has = (...ids) => ids.some(id => conds.has(id) || surfs.has(id));
+        const tips = [];
+        if (has('greasy', 'wet', 'muddy', 'rooty', 'leaves'))
+          tips.push('Slippery: open low-speed compression 1–2 clicks so the tires track over roots and wet rock.');
+        if (has('bumps', 'blown', 'rocky'))
+          tips.push('Repeated hits: speed up rebound 1–2 clicks so the suspension recovers between hits instead of packing down.');
+        if (has('rocky'))
+          tips.push('Harsh bottom-outs on rocks: add a volume spacer or a click of high-speed compression before adding lots of air.');
+        if (has('hardpack', 'hero'))
+          tips.push('Fast and grippy: add 1–2 clicks of low-speed compression for support in berms and on jump faces.');
+        if (has('moondust', 'dusty', 'marbles'))
+          tips.push('Loose: keep compression open for grip, and wipe your fork stanchions and shock after the ride.');
+        if (has('snow'))
+          tips.push('Cold: air pressure drops and damping slows, so recheck tire pressure and sag at the trailhead and speed up rebound a click.');
+        tips.push('Change one thing at a time and log how it felt, so your best setup shows up in Trends.');
+        const w = num(weight);
+        return {
+          sag: SAG[bike.type] || SAG.trail,
+          shockStart: w ? `Many air shocks start near your kitted weight in psi (about ${Math.round(w)} psi). Frame leverage varies, so always confirm with sag.` : 'Add your rider weight to get a starting shock pressure.',
+          tips
+        };
+      }
+
+      // ---------- Pro: insights panel ----------
+      let insightTab = 'recommend';
+      const recState = { condition: DEFAULT_COND, surfaces: [] };
+      let trendBike = 'all';
+
+      const tile = (label, value, sub = '') => `
+        <div class="rounded-xl bg-ink-850 border border-white/5 px-4 py-3">
+          <p class="text-[10px] uppercase tracking-wider text-slate-500">${label}</p>
+          <p class="mt-0.5 text-2xl font-bold text-white">${value}</p>
+          ${sub ? `<p class="text-[11px] text-slate-500">${sub}</p>` : ''}
+        </div>`;
+
+      function lockedHTML() {
+        const item = (icon, title, text) => `
+          <div class="rounded-xl bg-ink-850 border border-white/5 p-4">
+            <p class="text-lg">${icon}</p>
+            <p class="mt-1 text-sm font-semibold text-white">${title}</p>
+            <p class="mt-0.5 text-xs text-slate-400">${text}</p>
+          </div>`;
+        return `
+          <div class="grid sm:grid-cols-3 gap-3">
+            ${item('🎯', 'Setup for today\'s trails', 'Tire PSI, sag and clicker tips from your weight, tires, conditions and surface.')}
+            ${item('📈', 'Your best setup', 'Trends and the PSI that felt best for you in each condition.')}
+            ${item('🧾', 'Export', 'CSV and PDF reports to share with your mechanic.')}
+          </div>
+          <button type="button" data-unlock class="mt-4 w-full rounded-xl bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 py-3 text-sm font-bold text-white shadow-lg shadow-violet-900/40 hover:brightness-110 transition">Unlock with TrailSync Pro</button>`;
+      }
+
+      function recommendHTML() {
+        const bike = activeBike();
+        const trails = [recState];
+        const rec = recommendPsi(bike, profile.riderWeight, trails);
+        const proven = provenSetup(bike.name, [recState.condition]);
+        const susp = suspensionAdvice(bike, profile.riderWeight, trails);
+        const c = COND[recState.condition];
+        const chips = SURFACES.map(s => {
+          const on = recState.surfaces.includes(s.id);
+          return `<button type="button" data-rec-surface="${s.id}" class="rounded-full border px-2.5 py-1 text-xs transition ${on ? 'border-trail-400 bg-trail-500/10 text-trail-400' : 'border-white/10 bg-ink-850 text-slate-400'}">${s.label}</button>`;
+        }).join('');
+        const provenBlock = proven.front != null
+          ? `<div class="mt-3 rounded-xl border border-trail-500/30 bg-trail-500/10 px-4 py-3 text-sm">
+               <p class="font-semibold text-trail-400">Your proven setup for ${c.short.toLowerCase()}: ${proven.front} / ${proven.rear} psi</p>
+               <p class="mt-0.5 text-xs text-slate-300">Average of ${proven.count} rides on this bike you rated Good or Dialed${proven.frontClickers != null ? ` · clickers ${proven.frontClickers} front / ${proven.rearClickers ?? '–'} rear` : ''}. Your own results beat any chart.</p>
+             </div>`
+          : `<p class="mt-3 text-xs text-slate-500">Rate your rides (Good or Dialed) to unlock your own proven setup for ${c.short.toLowerCase()} days. ${proven.count}/2 so far.</p>`;
+        const stepRow = (s) => `
+          <li class="flex items-start justify-between gap-3 py-1.5">
+            <span class="text-slate-300">${esc(s.label)}</span>
+            <span class="shrink-0 tabular-nums text-slate-400">${s.df === s.dr ? signed(s.df) : `${signed(s.df)} / ${signed(s.dr)}`}</span>
+          </li>`;
+        return `
+          <div class="grid sm:grid-cols-2 gap-3">
+            <label class="block">
+              <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">Condition</span>
+              <select data-rec-cond class="mt-1 w-full rounded-lg bg-ink-850 border border-white/10 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-trail-500/60">${condOptions}</select>
+            </label>
+            <div>
+              <span class="text-[11px] font-medium uppercase tracking-wider text-slate-500">Bike</span>
+              <p class="mt-1 rounded-lg bg-ink-850 border border-white/10 px-3 py-2 text-sm text-slate-300 truncate">${esc(bike.name || 'Unnamed bike')} · ${bike.tireWidth}" ${bike.tubeless === 'no' ? 'tubes' : 'tubeless'}</p>
+            </div>
+          </div>
+          <div class="mt-3 flex flex-wrap gap-1.5">${chips}</div>
+
+          <p class="mt-5 text-xs font-semibold uppercase tracking-wider text-violet-300">Tire pressure</p>
+          <div class="mt-2 grid grid-cols-2 gap-3">
+            ${tile('Front', `${rec.front}<span class="text-sm font-medium text-slate-500"> psi</span>`, 'expert starting point')}
+            ${tile('Rear', `${rec.rear}<span class="text-sm font-medium text-slate-500"> psi</span>`, 'expert starting point')}
+          </div>
+          ${provenBlock}
+          <details class="mt-3 rounded-xl bg-ink-850/60 border border-white/5 px-4 py-2 text-sm">
+            <summary class="cursor-pointer text-xs text-slate-400">How this was worked out</summary>
+            <ul class="mt-2 divide-y divide-white/5 text-xs">
+              <li class="flex justify-between gap-3 py-1.5"><span class="text-slate-300">Baseline: 165 lb rider, 2.4" tubeless trail tires</span><span class="tabular-nums text-slate-400">${PSI_BASE.front} / ${PSI_BASE.rear}</span></li>
+              ${rec.steps.map(stepRow).join('')}
+            </ul>
+          </details>
+
+          <p class="mt-5 text-xs font-semibold uppercase tracking-wider text-violet-300">Suspension</p>
+          <div class="mt-2 grid grid-cols-2 gap-3">
+            ${tile('Fork sag', susp.sag.fork)}
+            ${tile('Shock sag', susp.sag.shock)}
+          </div>
+          <p class="mt-3 text-xs text-slate-400">${esc(susp.shockStart)}</p>
+          <ul class="mt-3 space-y-2 text-sm text-slate-300">
+            ${susp.tips.map(t => `<li class="flex gap-2"><span class="text-violet-300">›</span><span>${esc(t)}</span></li>`).join('')}
+          </ul>
+          <p class="mt-4 text-[11px] text-slate-600">Starting points, not rules. Stay within the pressure range printed on your tire and rim. Add 1 psi if you feel rim strikes or the tire folds in turns, and drop 1 psi if it skips over roots.</p>`;
+      }
+
+      function psiChart(rides) {
+        const pts = rides.filter(l => l.frontPsi != null || l.rearPsi != null).slice(-20);
+        if (pts.length < 2) return '<p class="rounded-xl bg-ink-850 border border-white/5 p-4 text-sm text-slate-400">Log at least 2 rides with tire pressure to see your trend.</p>';
+        const vals = pts.flatMap(l => [l.frontPsi, l.rearPsi]).filter(v => v != null);
+        const lo = Math.floor(Math.min(...vals)) - 1, hi = Math.ceil(Math.max(...vals)) + 1;
+        const W = 600, H = 200, L = 34, R = 12, T = 12, B = 26;
+        const x = (i) => L + i * (W - L - R) / (pts.length - 1);
+        const y = (v) => T + (hi - v) * (H - T - B) / (hi - lo);
+        const step = Math.max(1, Math.ceil((hi - lo) / 4));
+        let grid = '';
+        for (let v = lo; v <= hi; v += step) {
+          grid += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" stroke="rgba(255,255,255,.06)"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="#64748b">${v}</text>`;
+        }
+        const day = (l) => new Date(l.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+        const series = (key, color, name) => {
+          const p = pts.map((l, i) => l[key] == null ? null : [x(i), y(l[key]), l]).filter(Boolean);
+          return `<polyline fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" points="${p.map(q => `${q[0]},${q[1]}`).join(' ')}"/>`
+            + p.map(([cx, cy, l]) => `<circle cx="${cx}" cy="${cy}" r="${l.rating >= 4 ? 5 : 3.5}" fill="${l.rating >= 4 ? color : '#0a0d12'}" stroke="${color}" stroke-width="2"><title>${esc(day(l))} · ${esc(l.trailSystem)} · ${name} ${l[key]} psi${l.rating ? ` · rated ${l.rating}/5` : ''}</title></circle>`).join('');
+        };
+        return `
+          <div class="rounded-xl bg-ink-850 border border-white/5 p-3">
+            <svg viewBox="0 0 ${W} ${H}" class="w-full h-auto" role="img" aria-label="Tire pressure over your last ${pts.length} rides">
+              ${grid}
+              ${series('rearPsi', '#4ade80', 'Rear')}
+              ${series('frontPsi', '#38bdf8', 'Front')}
+              <text x="${L}" y="${H - 6}" font-size="11" fill="#64748b">${esc(day(pts[0]))}</text>
+              <text x="${W - R}" y="${H - 6}" font-size="11" fill="#64748b" text-anchor="end">${esc(day(pts[pts.length - 1]))}</text>
+            </svg>
+            <p class="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-[11px] text-slate-400">
+              <span><span class="inline-block h-2 w-2 rounded-full bg-sky-400"></span> Front</span>
+              <span><span class="inline-block h-2 w-2 rounded-full bg-trail-400"></span> Rear</span>
+              <span>Filled dots = rides you rated Good or Dialed</span>
+            </p>
+          </div>`;
+      }
+
+      function trendsHTML() {
+        const names = [...new Set(logs.map(l => l.bikeName).filter(Boolean))];
+        if (trendBike !== 'all' && !names.includes(trendBike)) trendBike = 'all';
+        const rides = logs.filter(l => trendBike === 'all' || l.bikeName === trendBike)
+          .slice().sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+        const rows = CONDITIONS.map(c => {
+          const rs = rides.filter(l => l.trails.some(t => t.condition === c.id));
+          if (!rs.length) return '';
+          const avg = (k) => { const v = avgOf(rs.map(l => l[k]).filter(x => x != null)); return v == null ? '–' : v.toFixed(1); };
+          const rated = rs.filter(l => l.rating);
+          const best = rated.slice().sort((a, b) => b.rating - a.rating || new Date(b.createdAt) - new Date(a.createdAt))[0];
+          return `
+            <tr class="border-t border-white/5">
+              <td class="py-2 pr-3 whitespace-nowrap">${c.icon} ${c.short}</td>
+              <td class="py-2 pr-3 tabular-nums">${rs.length}</td>
+              <td class="py-2 pr-3 tabular-nums whitespace-nowrap">${avg('frontPsi')} / ${avg('rearPsi')}</td>
+              <td class="py-2 pr-3 tabular-nums">${rated.length ? avgOf(rated.map(l => l.rating)).toFixed(1) + '★' : '–'}</td>
+              <td class="py-2 tabular-nums whitespace-nowrap">${best ? `${fmt(best.frontPsi)} / ${fmt(best.rearPsi)} psi <span class="text-slate-500">(${best.rating}★${best.frontClickers != null || best.rearClickers != null ? `, clicks ${fmt(best.frontClickers)}/${fmt(best.rearClickers)}` : ''})</span>` : '<span class="text-slate-600">rate a ride</span>'}</td>
+            </tr>`;
+        }).join('');
+        return `
+          ${names.length > 1 ? `<select data-trend-bike class="mb-3 rounded-lg bg-ink-850 border border-white/10 px-3 py-1.5 text-sm text-slate-300 focus:outline-none focus:ring-2 focus:ring-trail-500/60">
+            <option value="all">All bikes</option>${names.map(n => `<option value="${esc(n)}" ${n === trendBike ? 'selected' : ''}>${esc(n)}</option>`).join('')}
+          </select>` : ''}
+          ${psiChart(rides)}
+          <p class="mt-5 text-xs font-semibold uppercase tracking-wider text-violet-300">By condition</p>
+          ${rows ? `<div class="mt-2 overflow-x-auto"><table class="w-full text-left text-xs text-slate-300">
+            <thead class="text-[10px] uppercase tracking-wider text-slate-500"><tr><th class="pb-2 pr-3 font-medium">Condition</th><th class="pb-2 pr-3 font-medium">Rides</th><th class="pb-2 pr-3 font-medium">Avg F / R</th><th class="pb-2 pr-3 font-medium">Feel</th><th class="pb-2 font-medium">Best setup</th></tr></thead>
+            <tbody>${rows}</tbody></table></div>` : '<p class="mt-2 text-sm text-slate-400">No rides yet.</p>'}`;
+      }
+
+      function exportHTML() {
+        return `
+          <p class="text-sm text-slate-400">Download every ride (${logs.length}) with trails, conditions, pressures, clickers, ratings and notes.</p>
+          <div class="mt-4 grid sm:grid-cols-2 gap-3">
+            <button type="button" data-export="csv" class="rounded-xl border border-white/10 bg-ink-850 hover:bg-ink-700 p-4 text-left transition">
+              <p class="text-sm font-semibold text-white">⬇ Download CSV</p>
+              <p class="mt-0.5 text-xs text-slate-400">Opens in Excel, Numbers or Google Sheets.</p>
+            </button>
+            <button type="button" data-export="pdf" class="rounded-xl border border-white/10 bg-ink-850 hover:bg-ink-700 p-4 text-left transition">
+              <p class="text-sm font-semibold text-white">🧾 Save PDF report</p>
+              <p class="mt-0.5 text-xs text-slate-400">Opens a printable report. Choose "Save as PDF".</p>
+            </button>
+          </div>`;
+      }
+
+      function renderInsights() {
+        const body = $('#insightBody');
+        if (!body) return;
+        document.querySelectorAll('#insightTabs [data-tab]').forEach(b => {
+          const on = isPro && b.dataset.tab === insightTab;
+          b.classList.toggle('bg-ink-700', on);
+          b.classList.toggle('text-white', on);
+          b.classList.toggle('text-slate-500', !on);
+        });
+        if (!isPro) { body.innerHTML = lockedHTML(); return; }
+        body.innerHTML = insightTab === 'trends' ? trendsHTML() : insightTab === 'export' ? exportHTML() : recommendHTML();
+        const sel = body.querySelector('[data-rec-cond]');
+        if (sel) sel.value = recState.condition;
+      }
+
+      $('#insightTabs').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-tab]');
+        if (!b) return;
+        if (!isPro) { openModal(); return; }
+        insightTab = b.dataset.tab;
+        renderInsights();
+      });
+      $('#insightBody').addEventListener('click', (e) => {
+        if (e.target.closest('[data-unlock]')) return openModal();
+        const chip = e.target.closest('[data-rec-surface]');
+        if (chip) {
+          const id = chip.dataset.recSurface;
+          recState.surfaces = recState.surfaces.includes(id) ? recState.surfaces.filter(s => s !== id) : [...recState.surfaces, id];
+          return renderInsights();
+        }
+        const ex = e.target.closest('[data-export]');
+        if (ex) ex.dataset.export === 'csv' ? exportCsv() : exportPdf();
+      });
+      $('#insightBody').addEventListener('change', (e) => {
+        if (e.target.matches('[data-rec-cond]')) { recState.condition = e.target.value; renderInsights(); }
+        if (e.target.matches('[data-trend-bike]')) { trendBike = e.target.value; renderInsights(); }
+      });
+
+      // Log form: fill PSI for the trails being logged. Prefers the rider's own proven setup.
+      $('#suggestPsiBtn').addEventListener('click', () => {
+        if (!isPro) { openModal(); return; }
+        const f = logForm.elements;
+        const bike = bikeById(f.bikeId.value);
+        const trails = readTrailRows();
+        const rec = recommendPsi(bike, profile.riderWeight, trails);
+        const proven = provenSetup(bike.name, [...new Set(trails.map(t => t.condition))]);
+        const useProven = proven.front != null;
+        f.frontPsi.value = useProven ? proven.front : rec.front;
+        f.rearPsi.value = useProven ? proven.rear : rec.rear;
+        if (useProven && proven.frontClickers != null && f.frontClickers.value === '') f.frontClickers.value = proven.frontClickers;
+        if (useProven && proven.rearClickers != null && f.rearClickers.value === '') f.rearClickers.value = proven.rearClickers;
+        const note = $('#suggestNote');
+        note.textContent = useProven
+          ? `Your proven setup from ${proven.count} rides you rated Good or Dialed in these conditions. Expert starting point: ${rec.front} / ${rec.rear} psi.`
+          : `Expert starting point for ${bike.name || 'this bike'} on these trails. Rate this ride to start building your own proven setup.`;
+        note.classList.remove('hidden');
+      });
+
+      // ---------- Pro: export ----------
+      const fileDate = () => new Date().toISOString().slice(0, 10);
+      const rideDate = (l) => new Date(l.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
+      const condList = (l) => [...new Set(l.trails.map(t => COND[t.condition]?.short).filter(Boolean))].join(', ');
+      const surfList = (l) => [...new Set(l.trails.flatMap(t => t.surfaces || []).map(id => SURF[id]?.label).filter(Boolean))].join(', ');
+
+      function exportCsv() {
+        // Prefix text that a spreadsheet would treat as a formula.
+        const cell = (v) => {
+          let s = String(v ?? '');
+          if (/^[=+\-@\t\r]/.test(s)) s = `'${s}`;
+          return /[",\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+        };
+        const head = ['Date', 'Bike', 'Trail system', 'Trails', 'Conditions', 'Surfaces', 'Front PSI', 'Rear PSI', 'Front clickers', 'Rear clickers', 'Setup feel (1-5)', 'Notes'];
+        const rows = logs.map(l => [
+          new Date(l.createdAt).toISOString().slice(0, 10), l.bikeName, l.trailSystem,
+          l.trails.map(t => `${t.name} (${COND[t.condition]?.short || t.condition})`).join('; '),
+          condList(l), surfList(l), l.frontPsi, l.rearPsi, l.frontClickers, l.rearClickers, l.rating, l.notes
+        ]);
+        const csv = [head, ...rows].map(r => r.map(cell).join(',')).join('\r\n');
+        const url = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8' }));
+        const a = Object.assign(document.createElement('a'), { href: url, download: `trailsync-rides-${fileDate()}.csv` });
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+        toast(`Exported ${logs.length} ride${logs.length === 1 ? '' : 's'}`);
+      }
+
+      function exportPdf() {
+        const win = window.open('', '_blank');
+        if (!win) return toast('Allow pop-ups for this site to save the PDF');
+        const bikeRows = profile.bikes.map(b => {
+          const rec = recommendPsi(b, profile.riderWeight, [{ condition: DEFAULT_COND, surfaces: [] }]);
+          const sag = SAG[b.type] || SAG.trail;
+          return `<tr><td>${esc(b.name || 'Unnamed bike')}</td><td>${esc(b.fork || '–')}</td><td>${esc(b.shock || '–')}</td><td>${esc(b.tireWidth)}" ${b.tubeless === 'no' ? 'tubes' : 'tubeless'}${b.inserts !== 'none' ? `, inserts ${b.inserts === 'rear' ? 'rear' : 'F+R'}` : ''}</td><td>${rec.front} / ${rec.rear}</td><td>${sag.fork} / ${sag.shock}</td></tr>`;
+        }).join('');
+        const rideRows = logs.map(l => `<tr><td>${esc(rideDate(l))}</td><td>${esc(l.bikeName || '–')}</td><td><b>${esc(l.trailSystem)}</b><br>${l.trails.map(t => esc(t.name)).join(', ')}</td><td>${esc(condList(l))}${surfList(l) ? `<br><small>${esc(surfList(l))}</small>` : ''}</td><td>${fmt(l.frontPsi)} / ${fmt(l.rearPsi)}</td><td>${fmt(l.frontClickers)} / ${fmt(l.rearClickers)}</td><td>${l.rating ? l.rating + '/5' : '–'}</td><td>${esc(l.notes || '')}</td></tr>`).join('');
+        win.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>TrailSync report ${fileDate()}</title><style>
+          body{font:12px/1.4 -apple-system,Segoe UI,Roboto,Arial,sans-serif;color:#111;margin:24px}
+          h1{font-size:20px;margin:0}h2{font-size:14px;margin:22px 0 6px}p{margin:4px 0;color:#555}
+          table{width:100%;border-collapse:collapse}th,td{border-bottom:1px solid #ddd;padding:6px 6px 6px 0;text-align:left;vertical-align:top}
+          th{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:#666}small{color:#666}
+          @media print{body{margin:0}tr{break-inside:avoid}}
+        </style></head><body>
+          <h1>TrailSync setup report</h1>
+          <p>${esc(user?.email || '')} · ${new Date().toLocaleDateString()} · rider weight ${profile.riderWeight ? esc(profile.riderWeight) + ' lb kitted' : 'not set'}</p>
+          <h2>Bikes</h2>
+          <table><thead><tr><th>Bike</th><th>Fork</th><th>Shock</th><th>Tires</th><th>Start PSI F / R</th><th>Sag fork / shock</th></tr></thead><tbody>${bikeRows}</tbody></table>
+          <h2>Rides (${logs.length})</h2>
+          <table><thead><tr><th>Date</th><th>Bike</th><th>Trails</th><th>Conditions</th><th>PSI F / R</th><th>Clicks F / R</th><th>Feel</th><th>Notes</th></tr></thead><tbody>${rideRows || '<tr><td colspan="8">No rides yet.</td></tr>'}</tbody></table>
+          <p style="margin-top:16px">Start PSI is for hero dirt with no surface adjustments.</p>
+        </body></html>`);
+        win.document.close();
+        win.focus();
+        setTimeout(() => win.print(), 300);
+      }
+
       // ---------- Premium Modal ----------
       const modal = $('#premiumModal');
       let lastFocus = null;
@@ -1052,6 +1646,8 @@
         const portal = $('#portalLink');
         portal.classList.toggle('hidden', !(isPro && proStatus !== 'lifetime' && STRIPE_PORTAL_URL));
         if (STRIPE_PORTAL_URL) portal.href = STRIPE_PORTAL_URL + (user?.email ? `?prefilled_email=${encodeURIComponent(user.email)}` : '');
+        document.querySelectorAll('[data-pro-badge]').forEach(el => el.classList.toggle('hidden', isPro));
+        renderInsights();
       }
 
       function checkoutMessage(text, kind = 'error') {
