@@ -4,7 +4,7 @@
   "type": "module",
   "description": "TrailSync: suspension, tire pressure and trail condition log for mountain bikers",
   "scripts": {
-    "build": "node -e \"require('fs').mkdirSync('public',{recursive:true});require('fs').copyFileSync('index.html','public/index.html')\""
+    "build": "node -e \"require('fs').mkdirSync('public',{recursive:true});for(const f of ['index.html','terms.html','privacy.html'])require('fs').copyFileSync(f,'public/'+f)\""
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.3",

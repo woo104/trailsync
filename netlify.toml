@@ -1,5 +1,5 @@
 # Netlify deploy settings for TrailSync.
-# Only public/ (a copy of index.html) is served; functions in netlify/functions run server-side.
+# Only public/ (copies of index.html, terms.html and privacy.html) is served; functions in netlify/functions run server-side.
 [build]
   command = "npm run build"
   publish = "public"

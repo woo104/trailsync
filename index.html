@@ -296,6 +296,7 @@
 
   <footer class="max-w-6xl mx-auto px-4 sm:px-6 py-8 text-xs text-slate-600">
     <span id="footerNote">TrailSync · Data is stored locally in this browser.</span>
+    <span class="block mt-2"><a href="/terms.html" class="hover:text-slate-300 transition">Terms of Service</a> · <a href="/privacy.html" class="hover:text-slate-300 transition">Privacy Policy</a></span>
   </footer>
 
   <!-- Auth Screen -->
@@ -331,6 +332,7 @@
           </form>
 
           <p id="authMsg" role="status" class="hidden mt-4 rounded-lg px-3 py-2 text-sm"></p>
+          <p id="authLegal" class="hidden mt-4 text-xs text-slate-500">By creating an account you agree to the <a href="/terms.html" target="_blank" class="text-slate-300 underline hover:text-white">Terms</a> and <a href="/privacy.html" target="_blank" class="text-slate-300 underline hover:text-white">Privacy Policy</a>.</p>
 
           <div class="mt-4 flex items-center justify-between text-xs">
             <button type="button" id="forgotLink" class="text-slate-400 hover:text-white transition">Forgot password?</button>
@@ -390,6 +392,7 @@
             <span>Continue to secure checkout</span>
           </button>
           <p id="checkoutMsg" class="mt-3 text-center text-xs text-slate-500">Payments powered by Stripe · Cancel anytime</p>
+          <p id="checkoutLegal" class="mt-2 text-center text-[11px] text-slate-500">Monthly renews until you cancel. Full refund within 14 days. By continuing you agree to the <a href="/terms.html" target="_blank" class="text-slate-300 underline hover:text-white">Terms</a> and <a href="/privacy.html" target="_blank" class="text-slate-300 underline hover:text-white">Privacy Policy</a>.</p>
           <a id="portalLink" href="#" target="_blank" rel="noopener" class="hidden mt-6 w-full inline-flex items-center justify-center rounded-xl border border-white/10 bg-ink-800 hover:bg-ink-700 py-3 text-sm font-semibold text-white transition">Manage subscription</a>
         </div>
       </div>
@@ -1080,6 +1083,7 @@
         $('#passwordLabel').textContent = mode === 'reset' ? 'New password' : 'Password';
         authForm.elements.password.autocomplete = mode === 'login' ? 'current-password' : 'new-password';
         $('#authSubmit').textContent = SUBMIT_LABELS[mode];
+        $('#authLegal').classList.toggle('hidden', mode !== 'signup');
         $('#forgotLink').classList.toggle('hidden', mode !== 'login');
         $('#backLink').classList.toggle('hidden', tabbed || mode === 'reset');
         authMessage('');
@@ -1643,6 +1647,7 @@
         $('#planGroup').classList.toggle('hidden', isPro);
         $('#checkoutBtn').classList.toggle('hidden', isPro);
         $('#checkoutMsg').classList.toggle('hidden', isPro);
+        $('#checkoutLegal').classList.toggle('hidden', isPro);
         const portal = $('#portalLink');
         portal.classList.toggle('hidden', !(isPro && proStatus !== 'lifetime' && STRIPE_PORTAL_URL));
         if (STRIPE_PORTAL_URL) portal.href = STRIPE_PORTAL_URL + (user?.email ? `?prefilled_email=${encodeURIComponent(user.email)}` : '');
