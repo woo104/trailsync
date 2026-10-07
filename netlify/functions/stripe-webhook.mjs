@@ -4,13 +4,17 @@
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  httpClient: Stripe.createFetchHttpClient()
-});
+// Names only (never values), so a missing setting shows up as a clear message instead of a crash.
+const REQUIRED_ENV = ['STRIPE_SECRET_KEY', 'STRIPE_WEBHOOK_SECRET', 'SUPABASE_URL', 'SUPABASE_SECRET_KEY'];
+const missingEnv = () => REQUIRED_ENV.filter((name) => !process.env[name]);
 
-const supabaseAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, {
-  auth: { persistSession: false, autoRefreshToken: false }
-});
+let stripe, supabaseAdmin;
+function connect() {
+  stripe ??= new Stripe(process.env.STRIPE_SECRET_KEY, { httpClient: Stripe.createFetchHttpClient() });
+  supabaseAdmin ??= createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+}
 
 const toIso = (seconds) => (seconds ? new Date(seconds * 1000).toISOString() : null);
 
@@ -78,7 +82,13 @@ async function revokeLifetimeOnRefund(charge) {
 }
 
 export default async (req) => {
+  const missing = missingEnv();
+  if (missing.length) {
+    console.error('Missing Netlify environment variables:', missing.join(', '));
+    return new Response(`Webhook is not set up yet. Missing: ${missing.join(', ')}`, { status: 500 });
+  }
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
+  connect();
 
   let event;
   try {

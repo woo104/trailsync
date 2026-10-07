@@ -6,9 +6,17 @@
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  httpClient: Stripe.createFetchHttpClient()
-});
+// Names only (never values), so a missing setting shows up as a clear message instead of a crash.
+const REQUIRED_ENV = ['STRIPE_SECRET_KEY', 'STRIPE_PRICE_MONTHLY', 'STRIPE_PRICE_LIFETIME', 'SUPABASE_URL', 'SUPABASE_SECRET_KEY'];
+const missingEnv = () => REQUIRED_ENV.filter((name) => !process.env[name]);
+
+let stripe, supabaseAdmin;
+function connect() {
+  stripe ??= new Stripe(process.env.STRIPE_SECRET_KEY, { httpClient: Stripe.createFetchHttpClient() });
+  supabaseAdmin ??= createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
+}
 
 // Prices live in Stripe; the browser only picks a plan name, never a price or amount.
 const PLANS = {
@@ -17,15 +25,17 @@ const PLANS = {
 };
 const PRO_STATUSES = ['active', 'trialing', 'past_due', 'lifetime'];
 
-const supabaseAdmin = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SECRET_KEY, {
-  auth: { persistSession: false, autoRefreshToken: false }
-});
-
 const json = (status, body) =>
   new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
 
 export default async (req) => {
+  const missing = missingEnv();
+  if (missing.length) {
+    console.error('Missing Netlify environment variables:', missing.join(', '));
+    return json(500, { error: 'Checkout is not set up yet.', missing });
+  }
   if (req.method !== 'POST') return json(405, { error: 'Method not allowed' });
+  connect();
 
   // Who is paying? Verify the rider's Supabase session server-side.
   const token = (req.headers.get('authorization') || '').replace(/^Bearer\s+/i, '');
